@@ -1,0 +1,55 @@
+﻿<Window x:Class="FileSaverInterface.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileSaverInterface"
+        mc:Ignorable="d"
+        Title="File Saver" Height="296.551" Width="654.097" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
+    <Grid Margin="0,0,3.903,-0.173" UseLayoutRounding="False">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="OverViewStart" Content="Обзор" HorizontalAlignment="Left" Margin="174,44,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.514,1.764" Height="23" Click="OverViewStart_Click"/>
+        <Button x:Name="OverViewEnd" Content="Обзор" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="174,89,0,0" Height="23" Click="OverViewEnd_Click"/>
+        <TextBox x:Name="OverViewStartTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,44,0,0" FontSize="14" Text="C:\"/>
+        <TextBox x:Name="OverViewEndTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,89,0,0" FontSize="14" Text="C:\"/>
+        <Label Content="Промежуток:" Margin="5,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.445" Height="25" AutomationProperties.HelpText="Промежуток между копированием файлов" HorizontalAlignment="Left" Width="83"/>
+        <ComboBox x:Name="ComboBoxTime" Margin="88,120,456,0" VerticalAlignment="Top" Height="22">
+            <ListBoxItem x:Name="H1Time" Content="1 Час"/>
+            <ListBoxItem x:Name="H6Time" Content="6 Часов"/>
+            <ListBoxItem x:Name="H12Time" Content="12 Часов"/>
+            <ListBoxItem x:Name="H24Time" Content="24 Часа"/>
+        </ComboBox>
+
+        <TextBlock Margin="10,26,432,0" Height="18" VerticalAlignment="Top">Выберите папку для копирования:</TextBlock>
+        <TextBlock Margin="10,69,432,0" Height="18" VerticalAlignment="Top">Выберите папку для хранения:</TextBlock>
+        <TextBlock Margin="274,30,0,0" HorizontalAlignment="Left" Width="91" Height="20" VerticalAlignment="Top">Выберите Диск:</TextBlock>
+        <ComboBox x:Name="DiskList" SelectionChanged="lbx_SelectionChanged" Margin="365,26,0,0" Padding="5" AutomationProperties.Name="DiskList" StaysOpenOnEdit="True" HorizontalAlignment="Left" Width="61" Height="27" VerticalAlignment="Top"/>
+        <TextBlock Margin="274,53,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="129">Информация о диске:</TextBlock>
+        <TextBox TextWrapping="Wrap" x:Name="DiskInfoTextBox" VerticalScrollBarVisibility="Auto"
+                 Padding="5" Margin="273.995,72,0,0" MaxHeight="200" FontSize="14" HorizontalAlignment="Left" Width="334" Height="163" VerticalAlignment="Top" BorderThickness="0" AllowDrop="True" IsReadOnly="True" IsUndoEnabled="False" UseLayoutRounding="False" Foreground="Black" Background="White" BorderBrush="{x:Null}">
+            <TextBox.SelectionBrush>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
+            </TextBox.SelectionBrush>
+        </TextBox>
+        <Border BorderBrush="Black" BorderThickness="0.5" Height="163" VerticalAlignment="Top" Margin="274,72,0,0" HorizontalAlignment="Left" Width="334"/>
+        <Button x:Name="ButtonStart"  Content="Запустить сервис" HorizontalAlignment="Left" Margin="10,207,0,0" Width="120" Click="ButtonStart_Click" Height="20" VerticalAlignment="Top"/>
+        <Button x:Name="ButtonStop"  Content="Остановить сервис" HorizontalAlignment="Left" Margin="10,232,0,0" Width="120" Click="ButtonStop_Click" Height="20" VerticalAlignment="Top"/>
+
+        <StackPanel>
+            <Menu>
+                <MenuItem Header="Файл">
+                    <MenuItem Header="Сохранить как..." Click="ButtonSave_Click"/>
+                    <MenuItem Header=""/>
+                    <Separator/>
+                    <MenuItem Header="Выход" Click="ExitProgrammButton_Click"/>
+                </MenuItem>
+            </Menu>
+        </StackPanel>
+
+    </Grid>
+</Window>
