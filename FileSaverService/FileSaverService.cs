@@ -9,7 +9,7 @@ using System.Timers;
 namespace FileSaverService
 {
     /// <summary>
-    /// Основной класс служба, где прописана вся логика его работы.
+    /// Основной класс службы, где прописана вся логика его работы.
     /// </summary>
     public partial class FileSaverService : ServiceBase
     {
