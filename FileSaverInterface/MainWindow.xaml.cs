@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -18,6 +20,10 @@ namespace FileSaverInterface
         public string SaveFileDirectory;
         public string StartDirectory;
         public string EndDirectory;
+        public string BackupFolderDateName;
+        public string DefaultSaveFileDirectory;
+        public string EndFolder;
+        public int FolderVersion = 1;
 
         AboutProgramm aboutProgramm = new AboutProgramm();
         ServiceController serviceController = new ServiceController("FileSaverServiceName");
@@ -131,24 +137,12 @@ namespace FileSaverInterface
             if (!File.Exists(SaveFileDirectory + "FSSave.txt"))
             {
                 System.Windows.Forms.MessageBox.Show($"Save file don't exists. Can't start a service. Make save file in folder \u0022{SaveFileDirectory}\u0022 to start service.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                return;
             }
             else
             {
                 serviceController.ServiceName = "FileSaverServiceName";
                 serviceController.Refresh();
-
-                if (!Directory.Exists(StartDirectory) || StartDirectory.Length <= 3)
-                {
-                    System.Windows.Forms.MessageBox.Show($"Директория {StartDirectory} не найдена или указана неверно", "Ошибка");
-                    return;
-                }
-
-                if (!Directory.Exists(EndDirectory) || EndDirectory.Length <= 3)
-                {
-                    System.Windows.Forms.MessageBox.Show($"Директория {EndDirectory} не найдена или указана неверно", "Ошибка");
-                    return;
-                }
 
                 try
                 {
@@ -196,7 +190,7 @@ namespace FileSaverInterface
                     ServiceLogger.WriteEntry("Service Stopped from interface");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show($"Some Exception: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -206,12 +200,28 @@ namespace FileSaverInterface
         {
             try
             {
+                StartDirectory = OverViewStartTextBox.Text;
+                EndDirectory = OverViewEndTextBox.Text;
+
+                if (!Directory.Exists(StartDirectory) || StartDirectory.Length <= 4)
+                {
+                    System.Windows.Forms.MessageBox.Show($"Директория {StartDirectory} не найдена или указана неверно", "Ошибка");
+                    return;
+                }
+
+                if (!Directory.Exists(EndDirectory) || EndDirectory.Length <= 4)
+                {
+                    System.Windows.Forms.MessageBox.Show($"Директория {EndDirectory} не найдена или указана неверно", "Ошибка");
+                    return;
+                }
+
                 DialogResult dialogResult = saveFileDialog.ShowDialog();
 
                 if (dialogResult == System.Windows.Forms.DialogResult.OK)
                 {
                     SaveFile = saveFileDialog.FileName.ToString();
                 }
+
                 if (dialogResult == System.Windows.Forms.DialogResult.Cancel)
                 {
                     return;
@@ -221,8 +231,8 @@ namespace FileSaverInterface
 
                 //Write a line of text
                 streamWriter.WriteLine($"Date and time: {DateTime.Now}\n" +
-                    $"Start folder: {OverViewStartTextBox.Text}\n" +
-                    $"End folder: {OverViewEndTextBox.Text}\n" +
+                    $"Start folder: {StartDirectory}\n" +
+                    $"End folder: {EndDirectory}\n" +
                     $"Selected time span: {ComboBoxTime.Text}\n" +
                     $"Current user: {Environment.UserName}");
                 //Close the file
@@ -231,6 +241,85 @@ namespace FileSaverInterface
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("Exception: " + ex.Message, "Error");
+            }
+        }
+
+        private void StartBackupButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                DefaultSaveFileDirectory = $"C:/FSSaves/";
+
+                List<string> SaveFileList = new List<string>();
+
+                string[] SaveReader = File.ReadAllLines(DefaultSaveFileDirectory + "FSSave.txt");
+                string[] DateNow = DateTime.Now.ToString().Split();
+
+                string StartDir;
+                string EndDir;
+
+                int found = 0;
+
+                foreach (string s in SaveReader)
+                {
+                    found = s.IndexOf(": ");
+                    SaveFileList.Add(s.Substring(found + 2));
+                }
+
+                StartDir = SaveFileList[1];
+                EndDir = SaveFileList[2];
+
+                MainWindowManager.IsEnabled = false;
+                ProgressBarAsync.IsIndeterminate = true;
+                ProgressBarAsync.Value = 0;
+
+                MakeBackup(DateNow, StartDir, EndDir);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"On StartButtonClick exception: {ex.Message}");
+            }
+        }
+
+        async private void MakeBackup(string[] dateNow, string StartDir, string EndDir)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    BackupFolderDateName = DateTime.Now.ToString();
+
+                    DirectoryWork.DirectoryCreate(EndDir);
+
+                m1: EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
+
+                    if (Directory.Exists(EndFolder))
+                    {
+                        FolderVersion++;
+                        goto m1;
+                    }
+                    else
+                    {
+                        EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
+
+                        DirectoryWork.DirectoryCreate(EndFolder);
+
+                        DirectoryWork.DirectoryCopy(StartDir, EndFolder, true);
+
+                        FolderVersion = 1;
+                    }
+                });
+
+                ProgressBarAsync.IsIndeterminate = false;
+                ProgressBarAsync.Value = 100;
+                System.Windows.Forms.MessageBox.Show("Копирование успешно.");
+                MainWindowManager.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("On MakeBackup exception: " + ex.Message);
+
+                MainWindowManager.IsEnabled = true;
             }
         }
 

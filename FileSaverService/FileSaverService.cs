@@ -13,13 +13,19 @@ namespace FileSaverService
         public string StartDir;
         public string EndDir;
         public string DefaultSaveFileDirectory;
-        public string EndDirectoryDateName;
+        public string EndFolder;
+
         public int SaveFileTime;
+        public int FolderVersion = 1;
 
-        List<string> newList = new List<string>();
+        List<string> SaveFileList = new List<string>();
 
+        FileSaverService fileSaverService = new FileSaverService();
+
+        //Импорт advapi32.dll для корректной работы SetServiceStatus
         [DllImport("advapi32.dll", SetLastError = true)]
 
+        //Установка статуса сервиса
         private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
 
         public FileSaverService()
@@ -28,53 +34,61 @@ namespace FileSaverService
             {
                 InitializeComponent();
 
+                //Указатели на существующий лог в "Просмотр событий"
                 ServiceLogger.Source = "FileSaverServiceSource";
                 ServiceLogger.Log = "FileSaverServiceLog";
 
+                //Очистка лога
                 ServiceLogger.Clear();
 
-                string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+                //Нужно реализовать "Загрузку"
+                DefaultSaveFileDirectory = $"C:/FSSaves/";
 
-                DefaultSaveFileDirectory = $"C:/FSSaves/"; //Exception on save file: Не удалось найти часть пути "C:\Users\СИСТЕМА\Documents\FSSaves\Save.txt".
-
-                string[] FileReader = File.ReadAllLines(DefaultSaveFileDirectory + "FSSave.txt");
+                string[] SaveReader = File.ReadAllLines(DefaultSaveFileDirectory + "FSSave.txt"); //FSSave должен получать название файла из "Загрузки" (Загруженного файла)
 
                 int found = 0;
 
-                foreach (string s in FileReader)
+                //Разделение информации из файла сохранения
+                foreach (string s in SaveReader)
                 {
                     found = s.IndexOf(": ");
-                    newList.Add(s.Substring(found + 2));
+                    //Разделение и добавление информации в лист (добавление только информации после занка ": ")
+                    SaveFileList.Add(s.Substring(found + 2));
                 }
 
-                StartDir = newList[1];
-                EndDir = newList[2];
+                //Лист имеет 5 индексов:
+                //0 индекс — дата и время сохранения
+                //1 и 2 индексы — папки указанные в файле сохранения
+                //3 индекс — выбранный промежуток между сохранениями
+                //4 индекс — пользователь, от имени которого сделано сохранение
+                StartDir = SaveFileList[1]; //Начальная директория
+                EndDir = SaveFileList[2]; //Конечная директория
 
-                switch (newList[3].Substring(0, 2))
+                //Информация о выбранном времени
+                switch (SaveFileList[3].Substring(0, 2))
                 {
                     case "1 ":
-                        SaveFileTime = 3600000; //3 600 000 ms (1 hour)
+                        SaveFileTime = 3600000; //3 600 000 ms (1 час)
                         break;
                     case "6 ":
-                        SaveFileTime = 21600000; //21 600 000 ms (6 hours)
+                        SaveFileTime = 21600000; //21 600 000 ms (6 часов)
                         break;
                     case "12":
-                        SaveFileTime = 43200000; //43 200 000 ms (12 hours)
+                        SaveFileTime = 43200000; //43 200 000 ms (12 часов)
                         break;
                     case "24":
-                        SaveFileTime = 86400000; //86 400 000 ms (24 hours)
+                        SaveFileTime = 86400000; //86 400 000 ms (24 часа)
                         break;
                 }
 
+                //Проверка указанных в файле сохранения путей. Если меньше или равно 4 знакам, то операция прервётся
                 if (StartDir.Length <= 4 || EndDir.Length <= 4)
                 {
-                    StartDir = "C:/Logs";
-                    EndDir = "E:/LogsBackup";
-                }
-                else
-                {
-                    StartDir = newList[1];
-                    EndDir = newList[2];
+                    ServiceLogger.WriteEntry($"Не верно указаны папки или путь к ним слишком короткий." +
+                        $"\nНачальная папка: {StartDir}" +
+                        $"\nКонечная папка: {EndDir}");
+                    fileSaverService.Stop();
+                    return;
                 }
             }
             catch (Exception ex)
@@ -87,46 +101,43 @@ namespace FileSaverService
         {
             try
             {
-                // Update the service state to Start Pending.
+                //Обновление состояния службы до "Start Pending".
                 ServiceStatus serviceStatus = new ServiceStatus();
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
                 serviceStatus.dwWaitHint = 100000;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
-                StartDir = newList[1];
-                EndDir = newList[2];
+                StartDir = SaveFileList[1];
+                EndDir = SaveFileList[2];
 
+                //Если лога с текущими указателями не существует, то создаёт его
                 if (!EventLog.SourceExists("FileSaverServiceSource"))
                 {
                     EventLog.CreateEventSource("FileSaverServiceSource", "FileSaverServiceLog");
                 }
 
-                ServiceLogger.Source = "FileSaverServiceSource";
-                ServiceLogger.Log = "FileSaverServiceLog";
+                ServiceLogger.WriteEntry($"Сервис запустился с параметрами: \n" +
+                    $"Начальная папка: {StartDir}\n" +
+                    $"Конечная папка: {EndDir}\n" +
+                    $"Промежуток времени: {SaveFileList[3]}");
 
-                ServiceLogger.WriteEntry($"Service started with this parameters: \n" +
-                    $"Start folder: {StartDir}\n" +
-                    $"End folder: {EndDir}\n" +
-                    $"Time span: {newList[3]}");
-
-                // Set up a timer that triggers every minute.
+                //Устанавливаем таймер
                 Timer timer = new Timer();
-                timer.Interval = SaveFileTime; // 180 seconds
+                timer.Interval = SaveFileTime;
                 timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
                 timer.Start();
 
-                ServiceLogger.WriteEntry($"Timer Sarted. Time span: {SaveFileTime} ms ({newList[3]})");
+                ServiceLogger.WriteEntry($"Таймер запущен с промежутком: {SaveFileTime} ms ({SaveFileList[3]})");
 
-                // Update the service state to Running.
+                //Обновление состояния службы до "Running".
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
             }
             catch (Exception ex)
             {
-                ServiceLogger.WriteEntry($"OnStart directories exception: " + ex.Message +
-                    $"\n\n Directories:\n   " +
-                    $"Start Directory: \u0022{StartDir}\u0022 \n   " +
-                    $"End Directory: \u0022{EndDir}\u0022");
+                ServiceLogger.WriteEntry($"Исключение в методе \u0022OnStart\u0022: " + ex.Message +
+                    $"Начальная директория: \u0022{StartDir}\u0022 \n" +
+                    $"Конечная директория: \u0022{EndDir}\u0022");
             }
         }
 
@@ -134,13 +145,13 @@ namespace FileSaverService
         {
             try
             {
-                // Update the service state to Stop Pending.
+                //Обновиление состояния службы до "Stop Pending".
                 ServiceStatus serviceStatus = new ServiceStatus();
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOP_PENDING;
                 serviceStatus.dwWaitHint = 100000;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
-                ServiceLogger.WriteEntry("Service OnStopped");
+                ServiceLogger.WriteEntry("Сервис остановлен.");
 
                 // Update the service state to Stopped.
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
@@ -148,7 +159,7 @@ namespace FileSaverService
             }
             catch (Exception ex)
             {
-                ServiceLogger.WriteEntry("OnStop exception: " + ex.Message);
+                ServiceLogger.WriteEntry("Исключение в методе \u0022OnStop\u0022: " + ex.Message);
             }
         }
 
@@ -156,54 +167,58 @@ namespace FileSaverService
         {
             try
             {
-                EndDirectoryDateName = DateTime.Now.ToString();
-
-                StartDir = newList[1];
-                EndDir = newList[2];
-
-                // TODO: Insert monitoring activities here.
-                ServiceLogger.WriteEntry($"Start Directory: {StartDir}");
-                ServiceLogger.WriteEntry($"End Directory: {EndDir}");
-                ServiceLogger.WriteEntry("Main operations started");
-                ServiceLogger.WriteEntry($"Checked if {EndDir} exists");
+                //Разделение текущей даты на 2 элемента массива "ДАТА и ВРЕМЯ" (Первый элемент — "01.01.2021". Второй элемент "00:00:00")
+                string[] dateNow = DateTime.Now.ToString().Split(' ');
 
                 if (!Directory.Exists(EndDir))
                 {
-                    ServiceLogger.WriteEntry($"Folder {EndDir} don't exists. Try create.");
+                    ServiceLogger.WriteEntry($"Папка \u0022{EndDir}\u0022 не существует. Попытка создать...");
                     DirectoryWork.DirectoryCreate(EndDir);
-                    ServiceLogger.WriteEntry($"Create {EndDir} ended.");
+
+                    if (Directory.Exists(EndDir))
+                    {
+                        ServiceLogger.WriteEntry($"Папка \u0022{EndDir}\u0022 создана.");
+                    }
                 }
                 else
                 {
-                    ServiceLogger.WriteEntry($"Directory {EndDir} already exists");
-                    ServiceLogger.WriteEntry($"Try to clear {EndDir}");
-
-                    Directory.Delete(EndDir, true);
-                    DirectoryWork.DirectoryCreate(EndDir);
-
-                    ServiceLogger.WriteEntry($"Folder {EndDir} cleared");
+                    ServiceLogger.WriteEntry($"Папка \u0022{EndDir}\u0022 уже существует.");
                 }
 
-                if (!Directory.Exists(EndDir))
+                //Имя папки где будут храниться скопированные файлы
+            m1: EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
+
+                if (Directory.Exists(EndFolder))
                 {
-                    ServiceLogger.WriteEntry($"Folder {EndDir} don't exists. Try create.");
-                    DirectoryWork.DirectoryCreate(EndDir);
-                    ServiceLogger.WriteEntry($"Create {EndDir} ended.");
+                    ServiceLogger.WriteEntry($"Папка \u0022{EndFolder}\u0022 уже существует.");
+
+                    FolderVersion++;
+
+                    goto m1;
                 }
+                else
+                {
+                    EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
 
-                ServiceLogger.WriteEntry("Starting copy method");
+                    ServiceLogger.WriteEntry($"Попытка создать папку \u0022{EndFolder}\u0022");
 
-                ServiceLogger.WriteEntry($"Start Directory: {StartDir}");
-                ServiceLogger.WriteEntry($"End Directory: {EndDir}");
+                    //Создание папки
+                    DirectoryWork.DirectoryCreate(EndFolder);
 
-                DirectoryWork.DirectoryCopy(StartDir, EndDir, true);
+                    ServiceLogger.WriteEntry($"Папка \u0022{EndFolder}\u0022 создана.");
+                    ServiceLogger.WriteEntry($"Попытка начать копирование из \u0022{StartDir}\u0022 в \u0022{EndFolder}\u0022...");
 
-                ServiceLogger.WriteEntry("Copy method ended");
-                ServiceLogger.WriteEntry("All operation has ended");
+                    //Запуск метода копирования
+                    DirectoryWork.DirectoryCopy(StartDir, EndFolder, true);
+
+                    FolderVersion = 1;
+
+                    ServiceLogger.WriteEntry("Копирование успешно.");
+                }
             }
             catch (Exception ex)
             {
-                ServiceLogger.WriteEntry("OnTimer exception: " + ex.Message);
+                ServiceLogger.WriteEntry("Исключение в методе \u0022OnTimer\u0022: " + ex.Message);
             }
         }
 
