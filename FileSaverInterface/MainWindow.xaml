@@ -20,10 +20,10 @@
         <TextBox x:Name="OverViewEndTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,89,0,0" FontSize="14" Text="C:\"/>
         <Label Content="Промежуток:" Margin="5,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.445" Height="25" AutomationProperties.HelpText="Промежуток между копированием файлов" HorizontalAlignment="Left" Width="83"/>
         <ComboBox x:Name="ComboBoxTime" Margin="88,120,461,0" VerticalAlignment="Top" Height="22">
-            <ListBoxItem x:Name="H1Time" Content="1 Час"/>
-            <ListBoxItem x:Name="H6Time" Content="6 Часов"/>
-            <ListBoxItem x:Name="H12Time" Content="12 Часов"/>
-            <ListBoxItem x:Name="H24Time" Content="24 Часа"/>
+            <ComboBoxItem x:Name="H1Time" Content="1 Час"/>
+            <ComboBoxItem x:Name="H6Time" Content="6 Часов"/>
+            <ComboBoxItem x:Name="H12Time" Content="12 Часов"/>
+            <ComboBoxItem x:Name="H24Time" Content="24 Часа"/>
         </ComboBox>
 
         <TextBlock Margin="10,26,437,0" Height="18" VerticalAlignment="Top">Выберите папку для копирования:</TextBlock>
