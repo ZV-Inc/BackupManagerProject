@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSaverInterface"
         mc:Ignorable="d"
-        Title="File Saver" Height="340.551" Width="654.097" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
-    <Grid Margin="0,0,3.903,-0.173" UseLayoutRounding="False">
+        Title="File Saver" Height="340" Width="655" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
+    <Grid UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -41,18 +41,22 @@
         <Button x:Name="ButtonStart"  Content="Запустить сервис" HorizontalAlignment="Left" Margin="10,151,0,0" Width="120" Click="ButtonStart_Click" Height="20" VerticalAlignment="Top"/>
         <Button x:Name="ButtonStop"  Content="Остановить сервис" HorizontalAlignment="Left" Margin="10,176,0,0" Width="120" Click="ButtonStop_Click" Height="20" VerticalAlignment="Top"/>
 
-        <StackPanel Margin="0,0,-1,0">
+        <StackPanel>
             <Menu>
                 <MenuItem Header="Файл">
                     <MenuItem Header="Сохранить как..." Click="ButtonSave_Click"/>
-                    <MenuItem Header=""/>
+                    <MenuItem Header="Открыть"/>
                     <Separator/>
                     <MenuItem Header="Выход" Click="ExitProgrammButton_Click"/>
+                </MenuItem>
+                <MenuItem Header="Справка">
+                    <MenuItem Header="О программе" Click="AboutProgramButton_Click"/>
+                    <MenuItem Header="Помощь" Click="ButtonHelp_Click"/>
                 </MenuItem>
             </Menu>
         </StackPanel>
         <Button Content="Запустить бэкап" HorizontalAlignment="Left" Margin="10,215,0,0" VerticalAlignment="Top" Width="120" Name="StartBackup" Click="StartBackupButton_Click"/>
-        <ProgressBar x:Name="ProgressBarAsync" HorizontalAlignment="Left" Height="23" Margin="10,264,0,0" VerticalAlignment="Top" Width="624"/>
+        <ProgressBar x:Name="ProgressBarAsync" HorizontalAlignment="Left" Height="23" Margin="10,264,0,0" VerticalAlignment="Top" Width="620"/>
 
     </Grid>
 </Window>

@@ -1,11 +1,11 @@
-﻿<Window x:Class="FileSaverInterface.AboutUsWindow"
+﻿<Window x:Class="FileSaverInterface.AboutProgram"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSaverInterface"
-        mc:Ignorable="d" Height="279.015" Width="490.087" ShowInTaskbar="False" ResizeMode="NoResize" AllowDrop="True" Title="О программе" Icon="diskInfo.png" WindowStartupLocation="CenterScreen">
-    <Grid Margin="0,0,-6,-3" RenderTransformOrigin="0.498,0.483">
+        mc:Ignorable="d" Height="279.015" Width="490.087" ResizeMode="NoResize" AllowDrop="True" Title="О программе" Icon="diskInfo.png" WindowStartupLocation="CenterScreen">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -18,4 +18,5 @@
         <Label Content="Copyright © Z&amp;V 2020-2021 File Saver. All rights reserved" HorizontalAlignment="Left" Margin="0,212,0,0" VerticalAlignment="Top" Width="478" FontSize="18" Height="41"/>
 
     </Grid>
+
 </Window>

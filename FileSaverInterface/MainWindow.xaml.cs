@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,9 +22,9 @@ namespace FileSaverInterface
         public string BackupFolderDateName;
         public string DefaultSaveFileDirectory;
         public string EndFolder;
+
         public int FolderVersion = 1;
 
-        AboutProgramm aboutProgramm = new AboutProgramm();
         ServiceController serviceController = new ServiceController("FileSaverServiceName");
         SaveFileDialog saveFileDialog = new SaveFileDialog();
         EventLog ServiceLogger = new EventLog();
@@ -35,7 +34,7 @@ namespace FileSaverInterface
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SaveFileDirectory = $"C:/FSSaves/";
 
@@ -113,23 +112,17 @@ namespace FileSaverInterface
             EndDirectory = OverViewEndTextBox.Text;
         }
 
-        private void ButtonHelp_Click_1(object sender, RoutedEventArgs e)
+        private void ButtonHelp_Click(object sender, RoutedEventArgs e)
         {
             Help.ShowHelp(null, "DBMHELP.chm");
         }
 
-        private void AboutUsButton_Click(object sender, RoutedEventArgs e)
+        private void AboutProgramButton_Click(object sender, RoutedEventArgs e)
         {
-            //Ссылка на дочернее окно
-            AboutUsWindow aboutUsWindow = new AboutUsWindow();
+            AboutProgram aboutProgram = new AboutProgram();
 
             //Показать дочернее окно
-            aboutUsWindow.ShowDialog();
-        }
-
-        private void AboutProgramm_Click(object sender, RoutedEventArgs e)
-        {
-            aboutProgramm.ShowDialog();
+            aboutProgram.ShowDialog();
         }
 
         private void ButtonStart_Click(object sender, RoutedEventArgs e)

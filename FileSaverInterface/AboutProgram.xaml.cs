@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace FileSaverInterface
 {
     /// <summary>
-    /// Логика взаимодействия для AboutUsWindow.xaml
+    /// Логика взаимодействия для AboutProgram.xaml
     /// </summary>
-    public partial class AboutUsWindow : Window
+    public partial class AboutProgram : Window
     {
-        public AboutUsWindow()
+        public AboutProgram()
         {
             InitializeComponent();
         }

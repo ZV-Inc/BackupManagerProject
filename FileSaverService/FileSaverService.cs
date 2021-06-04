@@ -81,7 +81,7 @@ namespace FileSaverService
                         break;
                 }
 
-                //Проверка указанных в файле сохранения путей. Если меньше или равно 4 знакам, то операция прервётся
+                //Проверка указанных, в файле сохранения, путей. Если меньше или равно 4 знакам, то операция прервётся
                 if (StartDir.Length <= 4 || EndDir.Length <= 4)
                 {
                     ServiceLogger.WriteEntry($"Не верно указаны папки или путь к ним слишком короткий." +
@@ -153,7 +153,7 @@ namespace FileSaverService
 
                 ServiceLogger.WriteEntry("Сервис остановлен.");
 
-                // Update the service state to Stopped.
+                //Обновления состояния службы до "Stopped".
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
             }
@@ -173,6 +173,7 @@ namespace FileSaverService
                 if (!Directory.Exists(EndDir))
                 {
                     ServiceLogger.WriteEntry($"Папка \u0022{EndDir}\u0022 не существует. Попытка создать...");
+
                     DirectoryWork.DirectoryCreate(EndDir);
 
                     if (Directory.Exists(EndDir))
@@ -206,7 +207,7 @@ namespace FileSaverService
                     DirectoryWork.DirectoryCreate(EndFolder);
 
                     ServiceLogger.WriteEntry($"Папка \u0022{EndFolder}\u0022 создана.");
-                    ServiceLogger.WriteEntry($"Попытка начать копирование из \u0022{StartDir}\u0022 в \u0022{EndFolder}\u0022...");
+                    ServiceLogger.WriteEntry($"Попытка начать копирование из папки \u0022{StartDir}\u0022 в папку \u0022{EndFolder}\u0022...");
 
                     //Запуск метода копирования
                     DirectoryWork.DirectoryCopy(StartDir, EndFolder, true);
