@@ -8,6 +8,9 @@ using System.Timers;
 
 namespace FileSaverService
 {
+    /// <summary>
+    /// Основной класс служба, где прописана вся логика его работы.
+    /// </summary>
     public partial class FileSaverService : ServiceBase
     {
         public string StartDir;
@@ -20,19 +23,24 @@ namespace FileSaverService
 
         List<string> SaveFileList = new List<string>();
 
-        //FileSaverService fileSaverService = new FileSaverService();
-
         //Импорт advapi32.dll для корректной работы SetServiceStatus
         [DllImport("advapi32.dll", SetLastError = true)]
 
         //Установка статуса сервиса
         private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
-
+        
+        /// <summary>
+        /// Метод в котором инициализируется служба.
+        /// </summary>
         public FileSaverService()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Происходит при запуске службы
+        /// </summary>
+        /// <param name="args">Аргумент необходимый для парвильной работы метода</param>
         protected override void OnStart(string[] args)
         {
             try
@@ -49,19 +57,18 @@ namespace FileSaverService
                     EventLog.CreateEventSource("FileSaverServiceSource", "FileSaverServiceLog");
                 }
 
-                //Указатели на существующий лог в "Просмотр событий"
+                //Указатели на существующий журнал в "Просмотр событий"
                 ServiceLogger.Source = "FileSaverServiceSource";
                 ServiceLogger.Log = "FileSaverServiceLog";
 
-                //Очистка лога
+                //Очистка журнала
                 ServiceLogger.Clear();
 
-                //Нужно реализовать "Загрузку"
+                //Путь к файлу с сохранением
                 string SaveFileWay = "C:/FSSaves/FSSave.txt";
 
-                ServiceLogger.WriteEntry($"Папка с сохранениями: {SaveFileWay}");
-
-                string[] SaveReader = File.ReadAllLines(SaveFileWay); //FSSave должен получать название файла из "Загрузки" (Загруженного файла)
+                //Читает файл с сохранением
+                string[] SaveReader = File.ReadAllLines(SaveFileWay);
 
                 int found = 0;
 
@@ -73,11 +80,11 @@ namespace FileSaverService
                     SaveFileList.Add(s.Substring(found + 2));
                 }
 
-                //Лист имеет 5 индексов:
-                //0 индекс — дата и время сохранения
-                //1 и 2 индексы — папки указанные в файле сохранения
-                //3 индекс — выбранный промежуток между сохранениями
-                //4 индекс — пользователь, от имени которого сделано сохранение
+                //Лист имеет 5 элементов:
+                //0 элемент — дата и время сохранения
+                //1 и 2 элемент — папки указанные в файле сохранения
+                //3 элемент — выбранный промежуток между сохранениями
+                //4 элемент — пользователь, от имени которого сделано сохранение
                 StartDir = SaveFileList[1]; //Начальная директория
                 EndDir = SaveFileList[2]; //Конечная директория
 
@@ -130,6 +137,9 @@ namespace FileSaverService
             }
         }
 
+        /// <summary>
+        /// Происходит во время остановки службы
+        /// </summary>
         protected override void OnStop()
         {
             try
@@ -152,6 +162,9 @@ namespace FileSaverService
             }
         }
 
+        /// <summary>
+        /// Метод вызываемый во время срабатывания таймера. Здесь прописана оснавная логика копирования файлов.
+        /// </summary>
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
             try
@@ -175,7 +188,7 @@ namespace FileSaverService
                     ServiceLogger.WriteEntry($"Папка \u0022{EndDir}\u0022 уже существует.");
                 }
 
-            //Имя папки где будут храниться скопированные файлы
+                //Имя папки где будут храниться скопированные файлы
             m1: EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
 
                 if (Directory.Exists(EndFolder))
@@ -188,6 +201,7 @@ namespace FileSaverService
                 }
                 else
                 {
+                    //Присвоение нового имени с увеличеным индексом "FolderVersion"
                     EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
 
                     ServiceLogger.WriteEntry($"Попытка создать папку \u0022{EndFolder}\u0022");
@@ -212,6 +226,9 @@ namespace FileSaverService
             }
         }
 
+        /// <summary>
+        /// Типы перечеслений состояний службы.
+        /// </summary>
         public enum ServiceState
         {
             SERVICE_STOPPED = 0x00000001,
@@ -223,6 +240,9 @@ namespace FileSaverService
             SERVICE_PAUSED = 0x00000007,
         }
 
+        /// <summary>
+        /// Структура в которой содержится информация о состоянии службы.
+        /// </summary>
         [StructLayout(LayoutKind.Sequential)]
         public struct ServiceStatus
         {
