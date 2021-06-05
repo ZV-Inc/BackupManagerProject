@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSaverInterface"
         mc:Ignorable="d"
-        Title="File Saver" Height="340" Width="655" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
+        Title="File Saver" Height="340" Width="890.385" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
     <Grid UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -19,7 +19,7 @@
         <TextBox x:Name="OverViewStartTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,44,0,0" FontSize="14" Text="C:\"/>
         <TextBox x:Name="OverViewEndTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,89,0,0" FontSize="14" Text="C:\"/>
         <Label Content="Промежуток:" Margin="5,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.445" Height="25" AutomationProperties.HelpText="Промежуток между копированием файлов" HorizontalAlignment="Left" Width="83"/>
-        <ComboBox x:Name="ComboBoxTime" Margin="88,120,461,0" VerticalAlignment="Top" Height="22">
+        <ComboBox x:Name="ComboBoxTime" Margin="88,120,0,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100">
             <ComboBoxItem x:Name="H1Time" Content="1 Час"/>
             <ComboBoxItem x:Name="H6Time" Content="6 Часов"/>
             <ComboBoxItem x:Name="H12Time" Content="12 Часов"/>
@@ -28,24 +28,23 @@
 
         <TextBlock Margin="10,26,437,0" Height="18" VerticalAlignment="Top">Выберите папку для копирования:</TextBlock>
         <TextBlock Margin="10,69,437,0" Height="18" VerticalAlignment="Top">Выберите папку для хранения:</TextBlock>
-        <TextBlock Margin="274,30,0,0" HorizontalAlignment="Left" Width="91" Height="20" VerticalAlignment="Top">Выберите Диск:</TextBlock>
-        <ComboBox x:Name="DiskList" SelectionChanged="lbx_SelectionChanged" Margin="365,26,0,0" Padding="5" AutomationProperties.Name="DiskList" StaysOpenOnEdit="True" HorizontalAlignment="Left" Width="61" Height="27" VerticalAlignment="Top"/>
-        <TextBlock Margin="274,53,0,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Left" Width="129">Информация о диске:</TextBlock>
+        <TextBlock Margin="0,27,253,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right" Width="91">Выберите Диск:</TextBlock>
+        <ComboBox x:Name="DiskList" SelectionChanged="lbx_SelectionChanged" Margin="0,23,192,0" Padding="5" AutomationProperties.Name="DiskList" StaysOpenOnEdit="True" HorizontalAlignment="Right" Width="61" Height="27" VerticalAlignment="Top"/>
+        <TextBlock Margin="0,50,215,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Right" Width="129">Информация о диске:</TextBlock>
         <TextBox TextWrapping="Wrap" x:Name="DiskInfoTextBox" VerticalScrollBarVisibility="Auto"
-                 Padding="5" Margin="273.995,72,0,0" MaxHeight="200" FontSize="14" HorizontalAlignment="Left" Width="334" Height="163" VerticalAlignment="Top" BorderThickness="0" AllowDrop="True" IsReadOnly="True" IsUndoEnabled="False" UseLayoutRounding="False" Foreground="Black" Background="White" BorderBrush="{x:Null}">
+                 Padding="5" Margin="0,69,10,0" MaxHeight="200" FontSize="14" Height="163" VerticalAlignment="Top" BorderThickness="0" AllowDrop="True" IsReadOnly="True" IsUndoEnabled="False" UseLayoutRounding="False" Foreground="Black" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderBrush="{x:Null}" HorizontalAlignment="Right" Width="334">
             <TextBox.SelectionBrush>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
             </TextBox.SelectionBrush>
         </TextBox>
-        <Border BorderBrush="Black" BorderThickness="0.5" Height="163" VerticalAlignment="Top" Margin="274,72,0,0" HorizontalAlignment="Left" Width="334"/>
+        <Border BorderBrush="Black" BorderThickness="0.5" Height="163" VerticalAlignment="Top" Margin="0,69,10,0" HorizontalAlignment="Right" Width="334"/>
         <Button x:Name="ButtonStart"  Content="Запустить сервис" HorizontalAlignment="Left" Margin="10,151,0,0" Width="120" Click="ButtonStart_Click" Height="20" VerticalAlignment="Top"/>
         <Button x:Name="ButtonStop"  Content="Остановить сервис" HorizontalAlignment="Left" Margin="10,176,0,0" Width="120" Click="ButtonStop_Click" Height="20" VerticalAlignment="Top"/>
 
-        <StackPanel>
-            <Menu>
+        <StackPanel Height="20" VerticalAlignment="Top" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+            <Menu Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
                 <MenuItem Header="Файл">
-                    <MenuItem Header="Сохранить как..." Click="ButtonSave_Click"/>
-                    <MenuItem Header="Открыть"/>
+                    <MenuItem Header="Сохранить" Click="ButtonSave_Click"/>
                     <Separator/>
                     <MenuItem Header="Выход" Click="ExitProgrammButton_Click"/>
                 </MenuItem>
@@ -56,7 +55,8 @@
             </Menu>
         </StackPanel>
         <Button Content="Запустить бэкап" HorizontalAlignment="Left" Margin="10,215,0,0" VerticalAlignment="Top" Width="120" Name="StartBackup" Click="StartBackupButton_Click"/>
-        <ProgressBar x:Name="ProgressBarAsync" HorizontalAlignment="Left" Height="23" Margin="10,264,0,0" VerticalAlignment="Top" Width="620"/>
+        <ProgressBar x:Name="ProgressBarAsync" Margin="10,0,10,10" Height="23" VerticalAlignment="Bottom"/>
+        <Label Content="Текущие настройки:" HorizontalAlignment="Left" Margin="270,21,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

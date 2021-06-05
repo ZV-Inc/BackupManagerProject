@@ -16,18 +16,15 @@ namespace FileSaverInterface
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string SaveFile;
-        public string SaveFileDirectory;
         public string StartDirectory;
         public string EndDirectory;
         public string BackupFolderDateName;
-        public string DefaultSaveFileDirectory;
         public string EndFolder;
 
         public int FolderVersion = 1;
 
+        RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\FileSaver");
         ServiceController serviceController = new ServiceController("FileSaverServiceName");
-        //SaveFileDialog saveFileDialog = new SaveFileDialog();
         EventLog ServiceLogger = new EventLog();
 
         public MainWindow()
@@ -41,12 +38,6 @@ namespace FileSaverInterface
             {
                 ServiceController.GetServices();
 
-                SaveFileDirectory = $"C:/FSSaves/";
-
-                if (!Directory.Exists(SaveFileDirectory))
-                {
-                    Directory.CreateDirectory(SaveFileDirectory);
-                }
                 /*
                 saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
                 saveFileDialog.FileName = "FSSave.txt";
@@ -173,10 +164,12 @@ namespace FileSaverInterface
         {
             try
             {
-                if (!File.Exists(SaveFileDirectory + "FSSave.txt"))
+                if (registryKey.GetValue("Start Directory") == null || registryKey.GetValue("End Directory") == null || registryKey.GetValue("Selected time span") == null)
                 {
-                    System.Windows.Forms.MessageBox.Show($"Файл сохранения не найден. Невозможно запустить службу. Убедитесь что в папке \u0022{SaveFileDirectory}\u0022 есть файл \u0022FSSave.txt\u0022.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    System.Windows.Forms.MessageBox.Show($"Не удалось найти сохраненные папки или одно из значений пустое.\n\n" +
+                        $"Start Directory: {StartDirectory}\n" +
+                        $"End Directory: {EndDirectory}\n" +
+                        $"Selected time span: {registryKey.GetValue("Selected time span")}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -252,7 +245,6 @@ namespace FileSaverInterface
                     return;
                 }
 
-                RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\FileSaver");
                 registryKey.SetValue("Start Directory", StartDirectory, RegistryValueKind.String);
                 registryKey.SetValue("End Directory", EndDirectory, RegistryValueKind.String);
                 registryKey.SetValue("Selected time span", ComboBoxTime.Text, RegistryValueKind.String);
@@ -261,30 +253,6 @@ namespace FileSaverInterface
                     $"Start Directory: {StartDirectory}\n" +
                     $"End Directory: {EndDirectory}\n" +
                     $"Selected time span: {ComboBoxTime.Text}", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                /*
-                DialogResult dialogResult = saveFileDialog.ShowDialog();
-
-                if (dialogResult == System.Windows.Forms.DialogResult.OK)
-                {
-                    SaveFile = saveFileDialog.FileName.ToString();
-                }
-
-                if (dialogResult == System.Windows.Forms.DialogResult.Cancel)
-                {
-                    return;
-                }
-
-                StreamWriter streamWriter = new StreamWriter(SaveFile);
-
-                //Write a line of text
-                streamWriter.WriteLine($"Date and time: {DateTime.Now}\n" +
-                    $"Start folder: {StartDirectory}\n" +
-                    $"End folder: {EndDirectory}\n" +
-                    $"Selected time span: {ComboBoxTime.Text}");
-                //Close the file
-                streamWriter.Close();
-                */
             }
             catch (Exception ex)
             {
@@ -296,32 +264,16 @@ namespace FileSaverInterface
         {
             try
             {
-                DefaultSaveFileDirectory = $"C:/FSSaves/";
+                string DateNow = DateTime.Now.ToString().Split(' ')[0];
 
-                List<string> SaveFileList = new List<string>();
-
-                string[] SaveReader = File.ReadAllLines(DefaultSaveFileDirectory + "FSSave.txt");
-                string[] DateNow = DateTime.Now.ToString().Split();
-
-                string StartDir;
-                string EndDir;
-
-                int found = 0;
-
-                foreach (string s in SaveReader)
-                {
-                    found = s.IndexOf(": ");
-                    SaveFileList.Add(s.Substring(found + 2));
-                }
-
-                StartDir = SaveFileList[1];
-                EndDir = SaveFileList[2];
+                StartDirectory = registryKey.GetValue("Start Directory").ToString();
+                EndDirectory = registryKey.GetValue("End Directory").ToString();
 
                 MainWindowManager.IsEnabled = false;
                 ProgressBarAsync.IsIndeterminate = true;
                 ProgressBarAsync.Value = 0;
 
-                MakeBackup(DateNow, StartDir, EndDir);
+                MakeBackup(DateNow, StartDirectory, EndDirectory);
             }
             catch (Exception ex)
             {
@@ -329,7 +281,7 @@ namespace FileSaverInterface
             }
         }
 
-        async private void MakeBackup(string[] dateNow, string StartDir, string EndDir)
+        async private void MakeBackup(string dateNow, string StartDir, string EndDir)
         {
             try
             {
@@ -339,7 +291,7 @@ namespace FileSaverInterface
 
                     DirectoryWork.DirectoryCreate(EndDir);
 
-                m1: EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
+                m1: EndFolder = EndDir + "\\" + "Backup-" + dateNow + $"-[{FolderVersion}]";
 
                     if (Directory.Exists(EndFolder))
                     {
@@ -348,7 +300,7 @@ namespace FileSaverInterface
                     }
                     else
                     {
-                        EndFolder = EndDir + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
+                        EndFolder = EndDir + "\\" + "Backup-" + dateNow + $"-[{FolderVersion}]";
 
                         DirectoryWork.DirectoryCreate(EndFolder);
 
