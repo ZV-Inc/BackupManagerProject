@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -26,7 +27,7 @@ namespace FileSaverInterface
         public int FolderVersion = 1;
 
         ServiceController serviceController = new ServiceController("FileSaverServiceName");
-        SaveFileDialog saveFileDialog = new SaveFileDialog();
+        //SaveFileDialog saveFileDialog = new SaveFileDialog();
         EventLog ServiceLogger = new EventLog();
 
         public MainWindow()
@@ -46,13 +47,13 @@ namespace FileSaverInterface
                 {
                     Directory.CreateDirectory(SaveFileDirectory);
                 }
-
+                /*
                 saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
                 saveFileDialog.FileName = "FSSave.txt";
                 saveFileDialog.DefaultExt = ".txt";
                 saveFileDialog.InitialDirectory = SaveFileDirectory;
                 saveFileDialog.Title = "Выберите путь сохранения файла";
-
+                */
                 ServiceLogger.Source = "FileSaverServiceSource";
                 ServiceLogger.Log = "FileSaverServiceLog";
 
@@ -251,6 +252,17 @@ namespace FileSaverInterface
                     return;
                 }
 
+                RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\FileSaver");
+                registryKey.SetValue("Start Directory", StartDirectory, RegistryValueKind.String);
+                registryKey.SetValue("End Directory", EndDirectory, RegistryValueKind.String);
+                registryKey.SetValue("Selected time span", ComboBoxTime.Text, RegistryValueKind.String);
+
+                System.Windows.Forms.MessageBox.Show($"Сохранение успешно. Сохраненные параметры:\n" +
+                    $"Start Directory: {StartDirectory}\n" +
+                    $"End Directory: {EndDirectory}\n" +
+                    $"Selected time span: {ComboBoxTime.Text}", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                /*
                 DialogResult dialogResult = saveFileDialog.ShowDialog();
 
                 if (dialogResult == System.Windows.Forms.DialogResult.OK)
@@ -272,6 +284,7 @@ namespace FileSaverInterface
                     $"Selected time span: {ComboBoxTime.Text}");
                 //Close the file
                 streamWriter.Close();
+                */
             }
             catch (Exception ex)
             {
