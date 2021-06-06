@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSaverInterface"
         mc:Ignorable="d"
-        Title="File Saver" Height="340" Width="890.385" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
+        Title="File Saver" Height="503" Width="625.385" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
     <Grid UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -14,10 +14,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="OverViewStart" Content="Обзор" HorizontalAlignment="Left" Margin="174,44,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.514,1.764" Height="23" Click="OverViewStart_Click"/>
-        <Button x:Name="OverViewEnd" Content="Обзор" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="174,89,0,0" Height="23" Click="OverViewEnd_Click"/>
-        <TextBox x:Name="OverViewStartTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,44,0,0" FontSize="14" Text="C:\"/>
-        <TextBox x:Name="OverViewEndTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,89,0,0" FontSize="14" Text="C:\"/>
+        <Button x:Name="ViewStart" Content="Обзор" HorizontalAlignment="Left" Margin="174,44,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.514,1.764" Height="23" Click="ViewStart_Click"/>
+        <Button x:Name="ViewEnd" Content="Обзор" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="174,89,0,0" Height="23" Click="ViewEnd_Click"/>
+        <TextBox x:Name="ViewStartTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,44,0,0" FontSize="14" Text="C:\"/>
+        <TextBox x:Name="ViewEndTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="159" Margin="10,89,0,0" FontSize="14" Text="C:\"/>
         <Label Content="Промежуток:" Margin="5,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.445" Height="25" AutomationProperties.HelpText="Промежуток между копированием файлов" HorizontalAlignment="Left" Width="83"/>
         <ComboBox x:Name="ComboBoxTime" Margin="88,120,0,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100">
             <ComboBoxItem x:Name="H1Time" Content="1 Час"/>
@@ -57,13 +57,13 @@
         <Button Content="Запустить бэкап" HorizontalAlignment="Left" Margin="10,215,0,0" VerticalAlignment="Top" Width="120" Name="StartBackup" Click="StartBackupButton_Click"/>
         <ProgressBar x:Name="ProgressBarAsync" Margin="10,0,10,10" Height="23" VerticalAlignment="Bottom"/>
         <TextBox TextWrapping="Wrap" x:Name="RegistryInfoTextBox" VerticalScrollBarVisibility="Auto"
-            Padding="5" Margin="278.602,69.878,0,0" MaxHeight="200" Height="162.082" VerticalAlignment="Top" BorderThickness="0" AllowDrop="True" IsReadOnly="True" IsUndoEnabled="False" UseLayoutRounding="False" Foreground="Black" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderBrush="{x:Null}" HorizontalAlignment="Left" Width="220.429" FontSize="14">
+            Padding="5" Margin="0,261,9,0" MaxHeight="200" BorderThickness="0" AllowDrop="True" IsReadOnly="True" IsUndoEnabled="False" UseLayoutRounding="False" Foreground="Black" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderBrush="{x:Null}" HorizontalAlignment="Right" Width="335" FontSize="14" Height="163" VerticalAlignment="Top">
             <TextBox.SelectionBrush>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
             </TextBox.SelectionBrush>
         </TextBox>
-        <Border x:Name="RegistryInfo" BorderBrush="Black" BorderThickness="0.5" Margin="279,70,0,0" Height="162" VerticalAlignment="Top" HorizontalAlignment="Left" Width="220"/>
-        <TextBlock Margin="279,49,0,0" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120"><Run Text="Текущ"/><Run Text="ие"/><Run Text=" настройк"/><Run Text="и"/><Run Text=":"/></TextBlock>
+        <Border BorderBrush="Black" BorderThickness="0.5" Margin="0,261,11,0" HorizontalAlignment="Right" Width="333" Height="162" VerticalAlignment="Top"/>
+        <TextBlock Text="Текущие настройки:" Margin="0,240,224,0" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120"/>
 
     </Grid>
 </Window>
