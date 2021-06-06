@@ -48,9 +48,22 @@ namespace FileSaverInterface
                 {
                     DiskList.Items.Add(strings.Name);
                 }
+                if (registryKey.GetValue("Start Directory",))
+                {
+
+                }
+
+                using (registryKey.OpenSubKey(@"Software\WOW6432Node\FileSaver"))
+                {
+                    registryKey.SetValue("Start Directory", "");
+                    registryKey.SetValue("End Directory", "");
+                    registryKey.SetValue("Selected time span", "");
+                }
 
                 DiskList.SelectedIndex = 0;
                 ComboBoxTime.SelectedIndex = 0;
+                RegistryInfoTextBox_Changed();
+                
             }
             catch (Exception ex)
             {
@@ -58,7 +71,7 @@ namespace FileSaverInterface
             }
         }
 
-        private void lbx_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DiskInfoTextBox_Changed(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -80,6 +93,28 @@ namespace FileSaverInterface
             }
         }
 
+        private void RegistryInfoTextBox_Changed()
+        {
+            try
+            {
+                if (registryKey.GetValue("Start Directory").ToString().Length == 0)
+                {
+                    RegistryInfoTextBox.Text = $"Не удалось получить данные (Возможно данные отсутствуют)";
+                }
+                else 
+                {
+                    RegistryInfoTextBox.Text = $"Начальная директория:\n {registryKey.GetValue("Start Directory")}\n" +
+                  $"Конечная директория:\n {registryKey.GetValue("End Directory")}\n" +
+                  $"Промежуток времени:\n {registryKey.GetValue("Selected time span")}";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"При загрузке информации из реестра произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
         private void OverViewStart_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -98,7 +133,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При выборе начальной папки произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При выборе начальной директории произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -120,7 +155,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При выборе конечной папки произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При выборе конечной дериктории произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -132,7 +167,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При открытии файла помощи произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При открытии файла помощи произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -148,7 +183,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При открытии окна \u0022О программе\u0022 произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При открытии окна \u0022О программе\u0022 произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -186,7 +221,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При попытке запустить службу произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При попытке запустить службу произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -214,7 +249,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При попытке остановить службу произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При попытке остановить службу произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -245,10 +280,13 @@ namespace FileSaverInterface
                     $"Start Directory: {StartDirectory}\n" + //Информация получаемая в эту строчку должа быть из реестра
                     $"End Directory: {EndDirectory}\n" +//Информация получаемая в эту строчку должа быть из реестра
                     $"Selected time span: {ComboBoxTime.Text}", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);//Информация получаемая в эту строчку должа быть из реестра
+
+                RegistryInfoTextBox_Changed();
+
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При попытке сохранить файл произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При попытке сохранить файл произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -269,7 +307,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"При попытке начать бэкап произошла ошибка: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"При попытке начать бэкап произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -309,12 +347,11 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("Во время копирования файлов произошла ошибка: " + ex.Message);
+                System.Windows.Forms.MessageBox.Show("Во время копирования файлов произошла ошибка: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 MainWindowManager.IsEnabled = true;
             }
         }
-
         private void ExitProgrammButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -323,7 +360,7 @@ namespace FileSaverInterface
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("При попытке закрыть программу произошла ошибка: " + ex.Message);
+                System.Windows.Forms.MessageBox.Show("При попытке закрыть программу произошла ошибка: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
