@@ -1,11 +1,14 @@
-﻿using Microsoft.Win32;
+﻿//StartDirectory — Начальная директория (Директория с файлами\папками)
+//EndDriectory — Конечная директория (Директория с папками бэкапов)
+//EndFolder — Название для конечной папки бэкапа
+
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.ServiceProcess;
 using System.Timers;
+using System.Diagnostics;
+using System.ServiceProcess;
+using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace FileSaverService
 {
@@ -16,17 +19,13 @@ namespace FileSaverService
     {
         public string StartDirectory;
         public string EndDirectory;
-        public string EndFolder;
         public string TimeSpan;
 
-        public int SaveFileTime;
-        public int FolderVersion = 1;
-
-        //Импорт advapi32.dll для корректной работы SetServiceStatus
+        //Импорт advapi32.dll для работы SetServiceStatus.
         [DllImport("advapi32.dll", SetLastError = true)]
 
-        //Установка статуса сервиса
-        private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
+        //Установка статуса служба
+        private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
         /// <summary>
         /// Метод в котором инициализируется служба.
@@ -37,9 +36,9 @@ namespace FileSaverService
         }
 
         /// <summary>
-        /// Происходит при запуске службы
+        /// Происходит при запуске службы.
         /// </summary>
-        /// <param name="args">Аргумент необходимый для парвильной работы метода</param>
+        /// <param name="args">Аргумент необходимый для парвильной работы метода.</param>
         protected override void OnStart(string[] args)
         {
             try
@@ -50,43 +49,49 @@ namespace FileSaverService
                 serviceStatus.dwWaitHint = 100000;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
-                //Если лога с текущими указателями не существует, то создаёт его
+                //TimeSpan заданный в миллисекундах (мс)
+                int msTimeSpan = 0;
+
+                //Если журнал с текущим именем не существует, то создаёт его
                 if (!EventLog.SourceExists("FileSaverServiceSource"))
                 {
                     EventLog.CreateEventSource("FileSaverServiceSource", "FileSaverServiceLog");
                 }
 
-                //Указатели на существующий журнал в "Просмотр событий"
+                //Указатели на существующий журнал в "Просмотр событий".
                 ServiceLogger.Source = "FileSaverServiceSource";
                 ServiceLogger.Log = "FileSaverServiceLog";
 
-                //Очистка журнала
+                //Очистка журнала.
                 ServiceLogger.Clear();
 
-                RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(@"Software\WOW6432Node\FileSaver");
-                StartDirectory = registryKey.GetValue("Start Directory").ToString();
-                EndDirectory = registryKey.GetValue("End Directory").ToString();
-                TimeSpan = registryKey.GetValue("Selected time span").ToString();
-                registryKey.Close();
+                //Открывает указанный раздел реестра.
+                using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(@"Software\WOW6432Node\FileSaver"))
+                {
+                    //Получение занчений из реестра.
+                    StartDirectory = registryKey.GetValue("Start Directory").ToString();
+                    EndDirectory = registryKey.GetValue("End Directory").ToString();
+                    TimeSpan = registryKey.GetValue("Selected time span").ToString();
+                }
 
                 ServiceLogger.WriteEntry($"Start Directory: {StartDirectory}\n" +
                     $"End Directory: {EndDirectory}\n" +
                     $"Time span: {TimeSpan}");
 
-                //Информация о выбранном времени
+                //Информация о выбранном времени.
                 switch (TimeSpan.Substring(0, 2))
                 {
                     case "1 ":
-                        SaveFileTime = 3600000; //3 600 000 ms (1 час)
+                        msTimeSpan = 3600000; //3 600 000 ms (1 час)
                         break;
                     case "6 ":
-                        SaveFileTime = 21600000; //21 600 000 ms (6 часов)
+                        msTimeSpan = 21600000; //21 600 000 ms (6 часов)
                         break;
                     case "12":
-                        SaveFileTime = 43200000; //43 200 000 ms (12 часов)
+                        msTimeSpan = 43200000; //43 200 000 ms (12 часов)
                         break;
                     case "24":
-                        SaveFileTime = 86400000; //86 400 000 ms (24 часа)
+                        msTimeSpan = 86400000; //86 400 000 ms (24 часа)
                         break;
                 }
 
@@ -99,14 +104,14 @@ namespace FileSaverService
                     return;
                 }
 
-                ServiceLogger.WriteEntry($"Сервис запустился с параметрами: \n" +
+                ServiceLogger.WriteEntry($"Служба запустилась с параметрами: \n" +
                     $"Начальная папка: {StartDirectory}\n" +
                     $"Конечная папка: {EndDirectory}\n" +
-                    $"Промежуток времени: {SaveFileTime} ms ({TimeSpan})");
+                    $"Промежуток времени: {msTimeSpan} ms ({TimeSpan})");
 
-                //Устанавливаем таймер
+                //Устанавливаем таймер.
                 Timer timer = new Timer();
-                timer.Interval = SaveFileTime;
+                timer.Interval = msTimeSpan;
                 timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
                 timer.Start();
 
@@ -123,7 +128,7 @@ namespace FileSaverService
         }
 
         /// <summary>
-        /// Происходит во время остановки службы
+        /// Происходит во время остановки службы.
         /// </summary>
         protected override void OnStop()
         {
@@ -135,7 +140,7 @@ namespace FileSaverService
                 serviceStatus.dwWaitHint = 100000;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
-                ServiceLogger.WriteEntry("Сервис остановлен.");
+                ServiceLogger.WriteEntry("Служба остановлена.");
 
                 //Обновления состояния службы до "Stopped".
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
@@ -157,9 +162,14 @@ namespace FileSaverService
                 //Разделение текущей даты на 2 элемента массива "ДАТА и ВРЕМЯ" (Первый элемент — "01.01.2021". Второй элемент "00:00:00")
                 string[] dateNow = DateTime.Now.ToString().Split(' ');
 
+                string EndFolder;
+
+                int FolderVersion = 1;
+
+                //Проверка, существует ли папка End Directory.
                 if (!Directory.Exists(EndDirectory))
                 {
-                    ServiceLogger.WriteEntry($"Папка \u0022{EndDirectory}\u0022 не существует. Попытка создать...");
+                    ServiceLogger.WriteEntry($"Папка \u0022{EndDirectory}\u0022 не найдена. Попытка создать...");
 
                     DirectoryWork.DirectoryCreate(EndDirectory);
 
@@ -173,7 +183,7 @@ namespace FileSaverService
                     ServiceLogger.WriteEntry($"Папка \u0022{EndDirectory}\u0022 уже существует.");
                 }
 
-            //Имя папки где будут храниться скопированные файлы
+            //Имя папки, где будут храниться скопированные файлы
             m1: EndFolder = EndDirectory + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
 
                 if (Directory.Exists(EndFolder))
@@ -191,13 +201,11 @@ namespace FileSaverService
 
                     ServiceLogger.WriteEntry($"Попытка создать папку \u0022{EndFolder}\u0022");
 
-                    //Создание папки
                     DirectoryWork.DirectoryCreate(EndFolder);
 
                     ServiceLogger.WriteEntry($"Папка \u0022{EndFolder}\u0022 создана.");
                     ServiceLogger.WriteEntry($"Попытка начать копирование из папки \u0022{StartDirectory}\u0022 в папку \u0022{EndFolder}\u0022...");
 
-                    //Запуск метода копирования
                     DirectoryWork.DirectoryCopy(StartDirectory, EndFolder, true);
 
                     FolderVersion = 1;
@@ -228,6 +236,7 @@ namespace FileSaverService
         /// <summary>
         /// Структура в которой содержится информация о состоянии службы.
         /// </summary>
+        //Последовательно помещает элементы структуры в памяти.
         [StructLayout(LayoutKind.Sequential)]
         public struct ServiceStatus
         {

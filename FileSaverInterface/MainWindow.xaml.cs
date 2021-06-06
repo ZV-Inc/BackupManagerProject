@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
@@ -38,13 +37,6 @@ namespace FileSaverInterface
             {
                 ServiceController.GetServices();
 
-                /*
-                saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
-                saveFileDialog.FileName = "FSSave.txt";
-                saveFileDialog.DefaultExt = ".txt";
-                saveFileDialog.InitialDirectory = SaveFileDirectory;
-                saveFileDialog.Title = "Выберите путь сохранения файла";
-                */
                 ServiceLogger.Source = "FileSaverServiceSource";
                 ServiceLogger.Log = "FileSaverServiceLog";
 
@@ -250,9 +242,9 @@ namespace FileSaverInterface
                 registryKey.SetValue("Selected time span", ComboBoxTime.Text, RegistryValueKind.String);
 
                 System.Windows.Forms.MessageBox.Show($"Сохранение успешно. Сохраненные параметры:\n" +
-                    $"Start Directory: {StartDirectory}\n" +
-                    $"End Directory: {EndDirectory}\n" +
-                    $"Selected time span: {ComboBoxTime.Text}", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    $"Start Directory: {StartDirectory}\n" + //Информация получаемая в эту строчку должа быть из реестра
+                    $"End Directory: {EndDirectory}\n" +//Информация получаемая в эту строчку должа быть из реестра
+                    $"Selected time span: {ComboBoxTime.Text}", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);//Информация получаемая в эту строчку должа быть из реестра
             }
             catch (Exception ex)
             {

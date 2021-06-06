@@ -27,7 +27,7 @@
         </ComboBox>
 
         <TextBlock Margin="10,26,437,0" Height="18" VerticalAlignment="Top">Выберите папку для копирования:</TextBlock>
-        <TextBlock Margin="10,69,437,0" Height="18" VerticalAlignment="Top">Выберите папку для хранения:</TextBlock>
+        <TextBlock Margin="10,69,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="178">Выберите папку для хранения:</TextBlock>
         <TextBlock Margin="0,27,253,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right" Width="91">Выберите Диск:</TextBlock>
         <ComboBox x:Name="DiskList" SelectionChanged="lbx_SelectionChanged" Margin="0,23,192,0" Padding="5" AutomationProperties.Name="DiskList" StaysOpenOnEdit="True" HorizontalAlignment="Right" Width="61" Height="27" VerticalAlignment="Top"/>
         <TextBlock Margin="0,50,215,0" Height="19" VerticalAlignment="Top" HorizontalAlignment="Right" Width="129">Информация о диске:</TextBlock>
