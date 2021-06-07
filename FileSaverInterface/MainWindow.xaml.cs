@@ -18,8 +18,6 @@ namespace FileSaverInterface
         public string StartDirectory;
         public string EndDirectory;
 
-        public int FolderVersion = 1;
-
         RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\FileSaver");
         ServiceController serviceController = new ServiceController("FileSaverServiceName");
         EventLog ServiceLogger = new EventLog("FileSaverServiceLog", ".", "FileSaverServiceSource");
@@ -318,29 +316,30 @@ namespace FileSaverInterface
                 string EndFolder;
                 string dateTime = DateTime.Now.ToString().Split(' ')[0];
 
+                int FolderVersion = 1;
+
                 await Task.Run(() =>
-                {
+                        {
+                            DirectoryWork.DirectoryCreate(EndDir);
 
-                    DirectoryWork.DirectoryCreate(EndDir);
+                        m1: EndFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{FolderVersion}]";
 
-                m1: EndFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{FolderVersion}]";
+                            if (Directory.Exists(EndFolder))
+                            {
+                                FolderVersion++;
+                                goto m1;
+                            }
+                            else
+                            {
+                                EndFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{FolderVersion}]";
 
-                    if (Directory.Exists(EndFolder))
-                    {
-                        FolderVersion++;
-                        goto m1;
-                    }
-                    else
-                    {
-                        EndFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{FolderVersion}]";
+                                DirectoryWork.DirectoryCreate(EndFolder);
 
-                        DirectoryWork.DirectoryCreate(EndFolder);
+                                DirectoryWork.DirectoryCopy(StartDir, EndFolder, true);
 
-                        DirectoryWork.DirectoryCopy(StartDir, EndFolder, true);
-
-                        FolderVersion = 1;
-                    }
-                });
+                                FolderVersion = 1;
+                            }
+                        });
 
                 ProgressBarAsync.IsIndeterminate = false;
                 ProgressBarAsync.Value = 100;
