@@ -17,10 +17,13 @@ namespace FileSaverInterface
     {
         public string StartDirectory;
         public string EndDirectory;
-
+        //Создание раздела в реестре.
         RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\FileSaver");
+        //Получает имя нужного сериса для работы.
         ServiceController serviceController = new ServiceController("FileSaverServiceName");
+        //Получает название лога и его ресурс, для обращения к логу программы.
         EventLog ServiceLogger = new EventLog("FileSaverServiceLog", ".", "FileSaverServiceSource");
+        //Вызывает диалоговое окно с выбором папки.
         FolderBrowserDialog browserDialog = new FolderBrowserDialog();
 
         public MainWindow()
