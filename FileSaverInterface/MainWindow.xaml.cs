@@ -43,7 +43,7 @@ namespace FileSaverInterface
                 {
                     DiskList.Items.Add(strings.Name);
                 }
-
+                //Проверка на наличие директории.
                 if (registryKey.GetValue("Start Directory") == null || registryKey.GetValue("End Directory") == null || registryKey.GetValue("Time span") == null)
                 {
                     using (registryKey.OpenSubKey(@"Software\WOW6432Node\FileSaver"))
@@ -63,13 +63,17 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"Ошибка при загрузке программы: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Обработчик событий кнопки "обзор" для стартовой директории.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ViewStart_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 ViewStart.IsEnabled = false;
-
+                
                 browserDialog.ShowDialog();
 
                 ViewStartTextBox.Text = browserDialog.SelectedPath;
@@ -83,7 +87,11 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При выборе начальной директории произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Обработчик событий кнопки "обзор" для конечной директории.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ViewEnd_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -103,11 +111,16 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При выборе конечной дериктории произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Обработчик событий для кнопки "Запустить сервис".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonStart_Click(object sender, RoutedEventArgs e)
         {
             try
-            {
+            { 
+                // Проверка параметров на наличие заданых значений.
                 if (registryKey.GetValue("Start Directory") == null || registryKey.GetValue("End Directory") == null || registryKey.GetValue("Time span") == null)
                 {
                     System.Windows.Forms.MessageBox.Show($"Не удалось найти сохраненные папки или одно из значений пустое.\n\n" +
@@ -119,7 +132,7 @@ namespace FileSaverInterface
                 {
                     serviceController.ServiceName = "FileSaverServiceName";
                     serviceController.Refresh();
-
+                    //Если служба уже запущена будет выведена ошибка.
                     if (serviceController.Status == ServiceControllerStatus.Running)
                     {
                         System.Windows.Forms.MessageBox.Show($"Не удалось запустить службу. Служба {serviceController.DisplayName} уже запущена.\n\n" +
@@ -141,14 +154,18 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При попытке запустить службу произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Обработка события кнопки "Остановить сервис".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonStop_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 serviceController.ServiceName = "FileSaverServiceName";
                 serviceController.Refresh();
-
+                //Если сервис уже остановлен, будет выведена ошибка.
                 if (serviceController.Status == ServiceControllerStatus.Stopped)
                 {
                     System.Windows.Forms.MessageBox.Show($"Не удалось остановить службу. Служба {serviceController.DisplayName} в данный момент остановлена.\n\n" +
@@ -169,7 +186,11 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При попытке остановить службу произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Кнопка сохранения текущих настроек бэкапа в директорию.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -206,7 +227,11 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При попытке сохранить файл произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Обработчик событий кнопки бэкап.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartBackupButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -225,7 +250,11 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При попытке начать бэкап произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Кнопка вызова Help файла.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonHelp_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -237,7 +266,11 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При открытии файла помощи произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Кнопка вызова информации "О программе".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AboutProgramButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -253,7 +286,11 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При открытии окна \u0022О программе\u0022 произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Обработчик событий проверки дисков на наличие, и характеристики.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DiskInfoTextBox_Changed(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -274,7 +311,9 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show($"При загрузке информации о дисках произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Обработчик событий проверки регистра, вывод данных регистра
+        /// </summary>
         private void RegistryInfoTextBox_Changed()
         {
             try
@@ -296,7 +335,11 @@ namespace FileSaverInterface
             }
 
         }
-
+        /// <summary>
+        /// Обработчик событий кнопки "Выход". Закрывает программу.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExitProgrammButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -308,7 +351,11 @@ namespace FileSaverInterface
                 System.Windows.Forms.MessageBox.Show("При попытке закрыть программу произошла ошибка: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        /// <summary>
+        /// Метод создания бэкапа, выполняет копирование.
+        /// </summary>
+        /// <param name="StartDir"></param>
+        /// <param name="EndDir"></param>
         async private void MakeBackup(string StartDir, string EndDir)
         {
             try
