@@ -12,7 +12,7 @@
         <Image HorizontalAlignment="Left" Height="180" Margin="10,10,0,0" VerticalAlignment="Top" Width="212" Source="diskInfo.png"/>
         <Label Content="File Saver" HorizontalAlignment="Left" Margin="222,0,0,0" VerticalAlignment="Top" Height="39" Width="120" FontSize="20" FontWeight="Bold"/>
         <Label Content="Текущая версия:" HorizontalAlignment="Left" Margin="143,39,0,0" VerticalAlignment="Top" Width="147" FontSize="18" Height="41"/>
-        <Label Content="0.6.2" HorizontalAlignment="Left" Margin="290,39,0,0" VerticalAlignment="Top" Height="41" Width="184" FontSize="18"/>
+        <Label Content="0.6.9" HorizontalAlignment="Left" Margin="290,39,0,0" VerticalAlignment="Top" Height="41" Width="184" FontSize="18"/>
         <Label Content="Поддержка:" HorizontalAlignment="Left" Margin="143,79,0,0" VerticalAlignment="Top" Width="112" FontSize="18" Height="40"/>
         <Label Content="Сайт:" HorizontalAlignment="Left" Margin="143,119,0,0" VerticalAlignment="Top" Width="53" FontSize="18" Height="39"/>
         <Label Content="Copyright © Z&amp;V 2020-2021 File Saver. All rights reserved" HorizontalAlignment="Left" Width="464" FontSize="17" Height="38" VerticalAlignment="Bottom" Margin="10,0,0,0"/>
