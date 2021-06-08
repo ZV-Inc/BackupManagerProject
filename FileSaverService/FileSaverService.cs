@@ -28,7 +28,7 @@ namespace FileSaverService
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
         /// <summary>
-        /// Метод в котором инициализируется служба.
+        /// Метод, где инициализируется служба.
         /// </summary>
         public FileSaverService()
         {
@@ -121,9 +121,9 @@ namespace FileSaverService
             }
             catch (Exception ex)
             {
-                ServiceLogger.WriteEntry($"Исключение в методе \u0022OnStart\u0022:\n" + ex.Message +
-                    $"\nНачальная директория: \u0022{StartDirectory}\u0022" +
-                    $"\nКонечная директория: \u0022{EndDirectory}\u0022" +
+                ServiceLogger.WriteEntry($"Исключение в методе \"OnStart\":\n" + ex.Message +
+                    $"\nНачальная директория: \"{StartDirectory}\"" +
+                    $"\nКонечная директория: \"{EndDirectory}\"" +
                     $"\nПромежуток: {TimeSpan}");
             }
         }
@@ -149,7 +149,7 @@ namespace FileSaverService
             }
             catch (Exception ex)
             {
-                ServiceLogger.WriteEntry("Исключение в методе \u0022OnStop\u0022:\n" + ex.Message);
+                ServiceLogger.WriteEntry("Исключение в методе \"OnStop\":\n" + ex.Message);
             }
         }
 
@@ -170,18 +170,18 @@ namespace FileSaverService
                 //Проверка, существует ли директория End Directory.
                 if (!Directory.Exists(EndDirectory))
                 {
-                    ServiceLogger.WriteEntry($"Директория \u0022{EndDirectory}\u0022 не найдена. Попытка создать...");
+                    ServiceLogger.WriteEntry($"Директория \"{EndDirectory}\" не найдена. Попытка создать...");
 
                     DirectoryWork.DirectoryCreate(EndDirectory);
 
                     if (Directory.Exists(EndDirectory))
                     {
-                        ServiceLogger.WriteEntry($"Директория \u0022{EndDirectory}\u0022 создана.");
+                        ServiceLogger.WriteEntry($"Директория \"{EndDirectory}\" создана.");
                     }
                 }
                 else
                 {
-                    ServiceLogger.WriteEntry($"Директория \u0022{EndDirectory}\u0022 уже существует.");
+                    ServiceLogger.WriteEntry($"Директория \"{EndDirectory}\" уже существует.");
                 }
 
             //Имя каталога, где будут храниться скопированные файлы и покаталоги
@@ -189,7 +189,7 @@ namespace FileSaverService
 
                 if (Directory.Exists(EndFolder))
                 {
-                    ServiceLogger.WriteEntry($"Директория \u0022{EndFolder}\u0022 уже существует.");
+                    ServiceLogger.WriteEntry($"Директория \"{EndFolder}\" уже существует.");
 
                     FolderVersion++;
 
@@ -200,12 +200,12 @@ namespace FileSaverService
                     //Присвоение нового имени с увеличеным индексом "FolderVersion"
                     EndFolder = EndDirectory + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
 
-                    ServiceLogger.WriteEntry($"Попытка создать каталог \u0022{EndFolder}\u0022");
+                    ServiceLogger.WriteEntry($"Попытка создать каталог \"{EndFolder}\"");
 
                     DirectoryWork.DirectoryCreate(EndFolder);
 
-                    ServiceLogger.WriteEntry($"каталога \u0022{EndFolder}\u0022 создана.");
-                    ServiceLogger.WriteEntry($"Попытка начать копирование из каталога \u0022{StartDirectory}\u0022 в каталог \u0022{EndFolder}\u0022...");
+                    ServiceLogger.WriteEntry($"каталога \"{EndFolder}\" создана.");
+                    ServiceLogger.WriteEntry($"Попытка начать копирование из каталога \"{StartDirectory}\" в каталог \"{EndFolder}\"...");
 
                     DirectoryWork.DirectoryCopy(StartDirectory, EndFolder, true);
 
@@ -216,7 +216,7 @@ namespace FileSaverService
             }
             catch (Exception ex)
             {
-                ServiceLogger.WriteEntry("Исключение в методе \u0022OnTimer\u0022: " + ex.Message);
+                ServiceLogger.WriteEntry("Исключение в методе \"OnTimer\":\n" + ex.Message);
             }
         }
 
