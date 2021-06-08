@@ -1,6 +1,6 @@
-﻿//StartDirectory — Начальная директория (Директория с файлами\папками)
-//EndDriectory — Конечная директория (Директория с папками бэкапов)
-//EndFolder — Название для конечной папки бэкапа
+﻿//StartDirectory — Начальная директория (Директория с файлами\каталогами)
+//EndDriectory — Конечная директория (Директория с каталогами копий)
+//EndFolder — Название конечного каталога
 
 using System;
 using System.IO;
@@ -98,16 +98,16 @@ namespace FileSaverService
                 //Проверка указанных, в файле сохранения, путей. Если меньше или равно 4 знакам, то операция прервётся
                 if (StartDirectory.Length <= 4 || EndDirectory.Length <= 4)
                 {
-                    ServiceLogger.WriteEntry($"Не верно указаны папки или путь к ним слишком короткий.\n" +
-                        $"\nНачальная директория: {StartDirectory}\n" +
-                        $"Конечная директория: {EndDirectory}\n");
+                    ServiceLogger.WriteEntry($"Не верно указаны каталоги или путь к ним слишком короткий.\n" +
+                        $"\nНачальная директория: {StartDirectory}" +
+                        $"\nКонечная директория: {EndDirectory}");
                     return;
                 }
 
-                ServiceLogger.WriteEntry($"Служба запустилась с параметрами: \n" +
+                ServiceLogger.WriteEntry($"Служба запустилась с параметрами:\n" +
                     $"Начальная директория: {StartDirectory}\n" +
                     $"Конечная директория: {EndDirectory}\n" +
-                    $"Промежуток времени: {msTimeSpan} ms ({TimeSpan})");
+                    $"Промежуток: {msTimeSpan} ms ({TimeSpan})");
 
                 //Устанавливаем таймер.
                 Timer timer = new Timer();
@@ -149,7 +149,7 @@ namespace FileSaverService
             }
             catch (Exception ex)
             {
-                ServiceLogger.WriteEntry("Исключение в методе \u0022OnStop\u0022: " + ex.Message);
+                ServiceLogger.WriteEntry("Исключение в методе \u0022OnStop\u0022:\n" + ex.Message);
             }
         }
 
@@ -170,26 +170,26 @@ namespace FileSaverService
                 //Проверка, существует ли директория End Directory.
                 if (!Directory.Exists(EndDirectory))
                 {
-                    ServiceLogger.WriteEntry($"директория \u0022{EndDirectory}\u0022 не найдена. Попытка создать...");
+                    ServiceLogger.WriteEntry($"Директория \u0022{EndDirectory}\u0022 не найдена. Попытка создать...");
 
                     DirectoryWork.DirectoryCreate(EndDirectory);
 
                     if (Directory.Exists(EndDirectory))
                     {
-                        ServiceLogger.WriteEntry($"директория \u0022{EndDirectory}\u0022 создана.");
+                        ServiceLogger.WriteEntry($"Директория \u0022{EndDirectory}\u0022 создана.");
                     }
                 }
                 else
                 {
-                    ServiceLogger.WriteEntry($"директория \u0022{EndDirectory}\u0022 уже существует.");
+                    ServiceLogger.WriteEntry($"Директория \u0022{EndDirectory}\u0022 уже существует.");
                 }
 
-            //Имя папки, где будут храниться скопированные файлы
+            //Имя каталога, где будут храниться скопированные файлы и покаталоги
             m1: EndFolder = EndDirectory + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
 
                 if (Directory.Exists(EndFolder))
                 {
-                    ServiceLogger.WriteEntry($"директория \u0022{EndFolder}\u0022 уже существует.");
+                    ServiceLogger.WriteEntry($"Директория \u0022{EndFolder}\u0022 уже существует.");
 
                     FolderVersion++;
 
@@ -200,12 +200,12 @@ namespace FileSaverService
                     //Присвоение нового имени с увеличеным индексом "FolderVersion"
                     EndFolder = EndDirectory + "\\" + "Backup-" + dateNow[0] + $"-[{FolderVersion}]";
 
-                    ServiceLogger.WriteEntry($"Попытка создать папку \u0022{EndFolder}\u0022");
+                    ServiceLogger.WriteEntry($"Попытка создать каталог \u0022{EndFolder}\u0022");
 
                     DirectoryWork.DirectoryCreate(EndFolder);
 
-                    ServiceLogger.WriteEntry($"директория \u0022{EndFolder}\u0022 создана.");
-                    ServiceLogger.WriteEntry($"Попытка начать копирование из папки \u0022{StartDirectory}\u0022 в папку \u0022{EndFolder}\u0022...");
+                    ServiceLogger.WriteEntry($"каталога \u0022{EndFolder}\u0022 создана.");
+                    ServiceLogger.WriteEntry($"Попытка начать копирование из каталога \u0022{StartDirectory}\u0022 в каталог \u0022{EndFolder}\u0022...");
 
                     DirectoryWork.DirectoryCopy(StartDirectory, EndFolder, true);
 
