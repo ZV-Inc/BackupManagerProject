@@ -54,7 +54,7 @@
                 </MenuItem>
             </Menu>
         </StackPanel>
-        <Button Content="Запустить бэкап" HorizontalAlignment="Left" Margin="10,0,0,48" Width="254" Name="StartBackup" Click="StartBackupButton_Click" Height="39" VerticalAlignment="Bottom"/>
+        <Button Content="Запустить бэкап" HorizontalAlignment="Left" Margin="10,0,0,48" Width="234" Name="StartBackup" Click="StartBackupButton_Click" Height="39" VerticalAlignment="Bottom"/>
         <ProgressBar x:Name="ProgressBarAsync" Margin="9,0,11,10" Height="24" VerticalAlignment="Bottom"/>
         <TextBox TextWrapping="Wrap" x:Name="RegistryInfoTextBox" VerticalScrollBarVisibility="Auto"
             Padding="5" Margin="0,261,9,0" MaxHeight="200" BorderThickness="0" AllowDrop="True" IsReadOnly="True" IsUndoEnabled="False" UseLayoutRounding="False" Foreground="Black" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderBrush="{x:Null}" HorizontalAlignment="Right" Width="335" FontSize="14" Height="147" VerticalAlignment="Top">
