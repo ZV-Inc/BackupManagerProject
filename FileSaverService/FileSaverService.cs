@@ -24,7 +24,7 @@ namespace FileSaverService
         //Импорт advapi32.dll для работы SetServiceStatus.
         [DllImport("advapi32.dll", SetLastError = true)]
 
-        //Установка статуса служба
+        //Установка статуса службы.
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
         /// <summary>
@@ -32,7 +32,14 @@ namespace FileSaverService
         /// </summary>
         public FileSaverService()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                ServiceLogger.WriteEntry($"При инициализации службы произошла ошибка:\n{ex.Message}");
+            }
         }
 
         /// <summary>
@@ -52,7 +59,7 @@ namespace FileSaverService
                 //TimeSpan заданный в миллисекундах (мс)
                 int msTimeSpan = 0;
 
-                //Если журнал с текущим именем не существует, то создаёт его
+                //Если журнал с ссылкой не существует, то создаёт его
                 if (!EventLog.SourceExists("FileSaverServiceSource"))
                 {
                     EventLog.CreateEventSource("FileSaverServiceSource", "FileSaverServiceLog");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceProcess;
 
 namespace FileSaverService
@@ -8,51 +9,34 @@ namespace FileSaverService
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>
-        static void Main(string[] args)
+        static void Main()
         {
-            if (Environment.UserInteractive)
+            bool serviceExists;
+            try
             {
-                if (args !=null && args.Length > 0)
+                if (serviceExists = ServiceController.GetServices().Any(s => s.ServiceName == "FileSaverService"))
                 {
-                    switch (args[0])
-                    {
-                        case "--install":
-                            try
-                            {
-                                var appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                                System.Configuration.Install.ManagedInstallerClass.InstallHelper(new string[] { appPath });
-                            }
-                            catch(Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
-
-                            break;
-
-                        case "--uninstall":
-                            try
-                            {
-                                var appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                                System.Configuration.Install.ManagedInstallerClass.InstallHelper(new string[] {"/u", appPath });
-                            }
-                            catch(Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
-
-                            break;
-                    }
+                    var appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    System.Configuration.Install.ManagedInstallerClass.InstallHelper(new string[] { "/u", appPath });
+                }
+                else
+                {
+                    var appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    System.Configuration.Install.ManagedInstallerClass.InstallHelper(new string[] { appPath });
                 }
             }
-            else
+            catch (Exception ex)
             {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[]
-                {
-                new FileSaverService()
-                };
-                ServiceBase.Run(ServicesToRun);
+                Console.WriteLine($"Произошла ошибка:\n{ex.Message}");
             }
+            /*
+            ServiceBase[] ServicesToRun;
+            ServicesToRun = new ServiceBase[]
+            {
+                new FileSaverService()
+            };
+            ServiceBase.Run(ServicesToRun);
+            */
         }
     }
 }

@@ -38,8 +38,8 @@
             </TextBox.SelectionBrush>
         </TextBox>
         <Border BorderBrush="Black" BorderThickness="0.5" Height="163" VerticalAlignment="Top" Margin="0,69,10,0" HorizontalAlignment="Right" Width="334"/>
-        <Button x:Name="ButtonStart"  Content="Запустить сервис" HorizontalAlignment="Left" Margin="10,151,0,0" Width="120" Click="ButtonStart_Click" Height="20" VerticalAlignment="Top"/>
-        <Button x:Name="ButtonStop"  Content="Остановить сервис" HorizontalAlignment="Left" Margin="10,176,0,0" Width="120" Click="ButtonStop_Click" Height="20" VerticalAlignment="Top"/>
+        <Button x:Name="ButtonStart"  Content="Запустить сервис" HorizontalAlignment="Left" Margin="10,0,0,114" Width="120" Click="ButtonStart_Click" Height="20" VerticalAlignment="Bottom"/>
+        <Button x:Name="ButtonStop"  Content="Остановить сервис" HorizontalAlignment="Left" Margin="10,0,0,89" Width="120" Click="ButtonStop_Click" Height="20" VerticalAlignment="Bottom"/>
 
         <StackPanel Height="20" VerticalAlignment="Top" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
             <Menu Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
@@ -54,7 +54,7 @@
                 </MenuItem>
             </Menu>
         </StackPanel>
-        <Button Content="Запустить бэкап" HorizontalAlignment="Left" Margin="10,215,0,0" VerticalAlignment="Top" Width="120" Name="StartBackup" Click="StartBackupButton_Click"/>
+        <Button Content="Запустить бэкап" HorizontalAlignment="Left" Margin="10,0,0,50" Width="120" Name="StartBackup" Click="StartBackupButton_Click" Height="20" VerticalAlignment="Bottom"/>
         <ProgressBar x:Name="ProgressBarAsync" Margin="10,0,10,10" Height="23" VerticalAlignment="Bottom"/>
         <TextBox TextWrapping="Wrap" x:Name="RegistryInfoTextBox" VerticalScrollBarVisibility="Auto"
             Padding="5" Margin="0,261,9,0" MaxHeight="200" BorderThickness="0" AllowDrop="True" IsReadOnly="True" IsUndoEnabled="False" UseLayoutRounding="False" Foreground="Black" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderBrush="{x:Null}" HorizontalAlignment="Right" Width="335" FontSize="14" Height="163" VerticalAlignment="Top">
@@ -64,6 +64,12 @@
         </TextBox>
         <Border BorderBrush="Black" BorderThickness="0.5" Margin="0,261,11,0" HorizontalAlignment="Right" Width="333" Height="162" VerticalAlignment="Top"/>
         <TextBlock Text="Текущие настройки:" Margin="0,240,224,0" Height="16" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120"/>
+        <Label Content="Тип вывода резервной копии:" Margin="5,142,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.505,0.445" Height="25" AutomationProperties.HelpText="Промежуток между копированием файлов" HorizontalAlignment="Left" Width="183"/>
+        <ComboBox x:Name="OutputTypeComboBox" Margin="10,172,0,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="178">
+            <ComboBoxItem Content="Zip Архив"/>
+            <ComboBoxItem Content="Новая папка"/>
+            <ComboBoxItem Content="Перезаписываемая папка"/>
+        </ComboBox>
 
     </Grid>
 </Window>

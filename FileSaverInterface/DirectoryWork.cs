@@ -41,12 +41,6 @@ namespace FileSaverInterface
             }
         }
 
-        /// <summary>
-        /// Копирует папку и файлы в ней при соответствующем условии
-        /// </summary>
-        /// <param name="sourceDirName"></param>
-        /// <param name="destDirName"></param>
-        /// <param name="copySubDirs"></param>
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             try

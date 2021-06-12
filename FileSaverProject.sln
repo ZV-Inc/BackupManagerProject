@@ -7,20 +7,36 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSaverService", "FileSav
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSaverInterface", "FileSaverInterface\FileSaverInterface.csproj", "{32C3E542-ED4D-4F38-9D9A-8A14E903F284}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FileSaverSetup", "FileSaverSetup\FileSaverSetup.vdproj", "{000ECD91-2895-4312-BC2E-9955203A149A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Debug|x86.Build.0 = Debug|Any CPU
 		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Release|x86.ActiveCfg = Release|Any CPU
+		{A0A71C1F-60D2-402E-AB14-90AA3054EED7}.Release|x86.Build.0 = Release|Any CPU
 		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Debug|x86.Build.0 = Debug|Any CPU
 		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Release|x86.ActiveCfg = Release|Any CPU
+		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Release|x86.Build.0 = Release|Any CPU
+		{000ECD91-2895-4312-BC2E-9955203A149A}.Debug|Any CPU.ActiveCfg = Debug
+		{000ECD91-2895-4312-BC2E-9955203A149A}.Debug|x86.ActiveCfg = Debug
+		{000ECD91-2895-4312-BC2E-9955203A149A}.Release|Any CPU.ActiveCfg = Release
+		{000ECD91-2895-4312-BC2E-9955203A149A}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

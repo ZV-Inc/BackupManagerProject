@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.IO.Compression;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -20,9 +21,9 @@ namespace FileSaverInterface
         //Создание раздела в реестре.
         RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\FileSaver");
         //Получает имя нужного сериса для работы.
-        ServiceController serviceController = new ServiceController("FileSaverServiceName");
+        ServiceController serviceController = new ServiceController("FileSaverService");
         //Получает название лога и его ресурс, для обращения к логу программы.
-        EventLog ServiceLogger = new EventLog("FileSaverServiceLog", ".", "FileSaverServiceSource");
+        EventLog ServiceLogger = new EventLog();
         //Вызывает диалоговое окно с выбором папки.
         FolderBrowserDialog browserDialog = new FolderBrowserDialog();
 
@@ -35,6 +36,12 @@ namespace FileSaverInterface
         {
             try
             {
+                //Если журнал с ссылкой не существует, то создаёт его
+                if (!EventLog.SourceExists("FileSaverServiceSource"))
+                {
+                    EventLog.CreateEventSource("FileSaverServiceSource", "FileSaverServiceLog");
+                }
+
                 //ServiceController получает имена всех служб.
                 ServiceController.GetServices();
 
@@ -46,7 +53,7 @@ namespace FileSaverInterface
                 {
                     DiskList.Items.Add(strings.Name);
                 }
-                //Проверка на наличие директории.
+                //Проверка на наличие директорий.
                 if (registryKey.GetValue("Start Directory") == null || registryKey.GetValue("End Directory") == null || registryKey.GetValue("Time span") == null)
                 {
                     using (registryKey.OpenSubKey(@"Software\WOW6432Node\FileSaver"))
@@ -57,6 +64,7 @@ namespace FileSaverInterface
                     }
                 }
 
+                OutputTypeComboBox.SelectedIndex = 0;
                 DiskList.SelectedIndex = 0;
                 ComboBoxTime.SelectedIndex = 0;
                 RegistryInfoTextBox_Changed();
@@ -133,7 +141,7 @@ namespace FileSaverInterface
                 }
                 else
                 {
-                    serviceController.ServiceName = "FileSaverServiceName";
+                    serviceController.ServiceName = "FileSaverService";
                     serviceController.Refresh();
                     //Если служба уже запущена будет выведена ошибка.
                     if (serviceController.Status == ServiceControllerStatus.Running)
@@ -166,7 +174,7 @@ namespace FileSaverInterface
         {
             try
             {
-                serviceController.ServiceName = "FileSaverServiceName";
+                serviceController.ServiceName = "FileSaverService";
                 serviceController.Refresh();
                 //Если сервис уже остановлен, будет выведена ошибка.
                 if (serviceController.Status == ServiceControllerStatus.Stopped)
@@ -246,7 +254,20 @@ namespace FileSaverInterface
                 ProgressBarAsync.IsIndeterminate = true;
                 ProgressBarAsync.Value = 0;
 
-                MakeBackup(StartDirectory, EndDirectory);
+                switch (OutputTypeComboBox.SelectedIndex)
+                {
+                    case 0:
+                        ZipArviceBackupType(StartDirectory, EndDirectory);
+                        break;
+
+                    case 1:
+                        OverwriteFolderBackupType(StartDirectory, EndDirectory);
+                        break;
+
+                    case 2:
+                        SingeFolderBackupType(StartDirectory, EndDirectory);
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -300,7 +321,7 @@ namespace FileSaverInterface
             {
                 //Вывод информации о дисках в TextBox.
                 DriveInfo driveInfo = new DriveInfo(DiskList.SelectedItem.ToString());
-                DiskInfoTextBox.Text = $"Свободное пространство: {driveInfo.AvailableFreeSpace / 1024 / 1024} MB\n"
+                DiskInfoTextBox.Text = $"Свободное пространство: {driveInfo.AvailableFreeSpace / 1048576} MB\n"
                     + $"Общий размер: {driveInfo.TotalSize / 1024 / 1024} MB\n"
                     + $"Формат устройства: {driveInfo.DriveFormat}\n"
                     + $"Тип устройства: {driveInfo.DriveType}\n"
@@ -359,48 +380,123 @@ namespace FileSaverInterface
         /// </summary>
         /// <param name="StartDir"></param>
         /// <param name="EndDir"></param>
-        async private void MakeBackup(string StartDir, string EndDir)
+
+        async private void ZipArviceBackupType(string StartDir, string EndDir)
         {
             try
             {
-                string EndFolder;
-                string dateTime = DateTime.Now.ToString().Split(' ')[0];
-
-                int FolderVersion = 1;
-
                 await Task.Run(() =>
-                        {
-                            DirectoryWork.DirectoryCreate(EndDir);
+                {
+                    string EndZip;
+                    string dateTime = DateTime.Now.ToString().Split(' ')[0];
 
-                        m1: EndFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{FolderVersion}]";
+                    int ZipVersion = 1;
 
-                            if (Directory.Exists(EndFolder))
-                            {
-                                FolderVersion++;
-                                goto m1;
-                            }
-                            else
-                            {
-                                EndFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{FolderVersion}]";
+                    if (!Directory.Exists(EndDir))
+                    {
+                        DirectoryWork.DirectoryCreate(EndDir);
+                    }
 
-                                DirectoryWork.DirectoryCreate(EndFolder);
+                m1: EndZip = EndDir + "\\" + "Backup-" + dateTime + $"-[{ZipVersion}]";
 
-                                DirectoryWork.DirectoryCopy(StartDir, EndFolder, true);
+                    if (File.Exists($"{EndZip}.zip"))
+                    {
+                        ZipVersion++;
+                        goto m1;
+                    }
+                    else
+                    {
+                        EndZip = EndDir + "\\" + "Backup-" + dateTime + $"-[{ZipVersion}]";
 
-                                FolderVersion = 1;
-                            }
-                        });
+                        ZipFile.CreateFromDirectory(StartDir, $"{EndZip}.zip");
 
+                        ZipVersion = 1;
+                    }
+                });
+
+                MainWindowManager.IsEnabled = true;
                 ProgressBarAsync.IsIndeterminate = false;
                 ProgressBarAsync.Value = 100;
-                System.Windows.Forms.MessageBox.Show("Копирование успешно.");
-                MainWindowManager.IsEnabled = true;
+                System.Windows.Forms.MessageBox.Show("Создание Zip Архива успешно.", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("Во время копирования файлов произошла ошибка: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show($"При попытке создать архив произошла ошибка:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        async private void OverwriteFolderBackupType(string StartDir, string EndDir)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    string EndOverwriteFolder;
+                    string dateTime = DateTime.Now.ToString().Split(' ')[0];
+
+                    int OverwriteFolderVersion = 1;
+
+                    if (!Directory.Exists(EndDir))
+                    {
+                        DirectoryWork.DirectoryCreate(EndDir);
+                    }
+
+                m1: EndOverwriteFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{OverwriteFolderVersion}]";
+
+                    if (Directory.Exists(EndOverwriteFolder))
+                    {
+                        OverwriteFolderVersion++;
+                        goto m1;
+                    }
+                    else
+                    {
+                        EndOverwriteFolder = EndDir + "\\" + "Backup-" + dateTime + $"-[{OverwriteFolderVersion}]";
+
+                        DirectoryWork.DirectoryCreate(EndOverwriteFolder);
+                        DirectoryWork.DirectoryCopy(StartDir, EndOverwriteFolder, true);
+
+                        OverwriteFolderVersion = 1;
+                    }
+                });
 
                 MainWindowManager.IsEnabled = true;
+                ProgressBarAsync.IsIndeterminate = false;
+                ProgressBarAsync.Value = 100;
+                System.Windows.Forms.MessageBox.Show("Папка создана успешно.", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"При попытке создать архив произошла ошибка:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        async private void SingeFolderBackupType(string StartDir, string EndDir)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    if (Directory.Exists(EndDir))
+                    {
+                        Directory.Delete(EndDir, true);
+                        DirectoryWork.DirectoryCreate(EndDir);
+                        DirectoryWork.DirectoryCopy(StartDir, EndDir, true);
+                    }
+                    else
+                    {
+                        DirectoryWork.DirectoryCreate(EndDir);
+                        DirectoryWork.DirectoryCopy(StartDir, EndDir, true);
+                    }
+                });
+
+                MainWindowManager.IsEnabled = true;
+                ProgressBarAsync.IsIndeterminate = false;
+                ProgressBarAsync.Value = 100;
+                System.Windows.Forms.MessageBox.Show("Папка создана успешно.", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"При попытке создать архив произошла ошибка:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
