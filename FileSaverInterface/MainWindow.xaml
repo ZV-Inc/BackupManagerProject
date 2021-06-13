@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSaverInterface"
         mc:Ignorable="d"
-        Title="File Saver" Height="485" Width="625.385" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
-    <Grid UseLayoutRounding="False" Margin="0,0,0,-0.5">
+        Title="File Saver" Height="485" Width="625" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
+    <Grid UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -42,7 +42,7 @@
         <Button x:Name="ButtonStop"  Content="Остановить сервис" HorizontalAlignment="Left" Margin="10,0,0,108" Width="132" Click="ButtonStop_Click" Height="32" VerticalAlignment="Bottom"/>
 
         <StackPanel Height="20" VerticalAlignment="Top" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
-            <Menu Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+            <Menu Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" Height="20">
                 <MenuItem Header="Файл">
                     <MenuItem Header="Сохранить" Click="ButtonSave_Click"/>
                     <Separator/>
@@ -70,6 +70,8 @@
             <ComboBoxItem Content="Новая папка"/>
             <ComboBoxItem Content="Перезаписываемая папка"/>
         </ComboBox>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Height="20" VerticalAlignment="Top"/>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Margin="0,20,0,0"/>
 
     </Grid>
 </Window>
