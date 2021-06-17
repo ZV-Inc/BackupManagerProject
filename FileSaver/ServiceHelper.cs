@@ -1,8 +1,4 @@
-﻿//StartDirectory — Начальная директория (Директория с файлами\каталогами)
-//EndDriectory — Конечная директория (Директория с каталогами копий)
-//EndFolder — Название конечного каталога
-
-using System;
+﻿using System;
 using System.IO;
 using System.Timers;
 using System.Diagnostics;
@@ -10,12 +6,9 @@ using System.ServiceProcess;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
-namespace FileSaverService
+namespace FileSaver
 {
-    /// <summary>
-    /// Основной класс службы, где прописана вся логика его работы.
-    /// </summary>
-    public partial class FileSaverService : ServiceBase
+    public partial class ServiceHelper : ServiceBase
     {
         public string StartDirectory;
         public string EndDirectory;
@@ -27,18 +20,11 @@ namespace FileSaverService
         //Установка статуса службы.
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
-        /// <summary>
-        /// Метод, где инициализируется служба.
-        /// </summary>
-        public FileSaverService()
+        public ServiceHelper()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Происходит при запуске службы.
-        /// </summary>
-        /// <param name="args">Аргумент необходимый для правильной работы метода.</param>
         protected override void OnStart(string[] args)
         {
             try
@@ -126,11 +112,9 @@ namespace FileSaverService
                     $"\nКонечная директория: \"{EndDirectory}\"" +
                     $"\nПромежуток: {TimeSpan}");
             }
+
         }
 
-        /// <summary>
-        /// Происходит во время остановки службы.
-        /// </summary>
         protected override void OnStop()
         {
             try
@@ -151,11 +135,9 @@ namespace FileSaverService
             {
                 ServiceLogger.WriteEntry("Исключение в методе \"OnStop\":\n" + ex.Message);
             }
+
         }
 
-        /// <summary>
-        /// Метод вызываемый во время срабатывания таймера. Здесь прописана оснавная логика копирования файлов.
-        /// </summary>
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
             try
@@ -220,9 +202,7 @@ namespace FileSaverService
             }
         }
 
-        /// <summary>
-        /// Типы перечеслений состояний службы.
-        /// </summary>
+
         public enum ServiceState
         {
             SERVICE_STOPPED = 0x00000001,

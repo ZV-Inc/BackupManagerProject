@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSaverService", "FileSav
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSaverInterface", "FileSaverInterface\FileSaverInterface.csproj", "{32C3E542-ED4D-4F38-9D9A-8A14E903F284}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FileSaverSetup", "FileSaverSetup\FileSaverSetup.vdproj", "{000ECD91-2895-4312-BC2E-9955203A149A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSaver", "FileSaver\FileSaver.csproj", "{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,14 @@ Global
 		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Release|x86.ActiveCfg = Release|Any CPU
 		{32C3E542-ED4D-4F38-9D9A-8A14E903F284}.Release|x86.Build.0 = Release|Any CPU
-		{000ECD91-2895-4312-BC2E-9955203A149A}.Debug|Any CPU.ActiveCfg = Debug
-		{000ECD91-2895-4312-BC2E-9955203A149A}.Debug|x86.ActiveCfg = Debug
-		{000ECD91-2895-4312-BC2E-9955203A149A}.Release|Any CPU.ActiveCfg = Release
-		{000ECD91-2895-4312-BC2E-9955203A149A}.Release|x86.ActiveCfg = Release
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Debug|x86.Build.0 = Debug|Any CPU
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Release|x86.ActiveCfg = Release|Any CPU
+		{44D0C69D-78C9-4A66-B0C3-7D622D83D31B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

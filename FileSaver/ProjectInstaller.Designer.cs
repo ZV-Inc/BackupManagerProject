@@ -1,5 +1,5 @@
 ﻿
-namespace FileSaverService
+namespace FileSaver
 {
     partial class ProjectInstaller
     {
@@ -29,32 +29,32 @@ namespace FileSaverService
         /// </summary>
         private void InitializeComponent()
         {
-            this.FileSaverServiceProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
-            this.FileSaverServiceInstaller = new System.ServiceProcess.ServiceInstaller();
+            this.serviceProcessInstaller1 = new System.ServiceProcess.ServiceProcessInstaller();
+            this.serviceInstaller1 = new System.ServiceProcess.ServiceInstaller();
             // 
-            // FileSaverServiceProcessInstaller
+            // serviceProcessInstaller1
             // 
-            this.FileSaverServiceProcessInstaller.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
-            this.FileSaverServiceProcessInstaller.Password = null;
-            this.FileSaverServiceProcessInstaller.Username = null;
+            this.serviceProcessInstaller1.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
+            this.serviceProcessInstaller1.Password = null;
+            this.serviceProcessInstaller1.Username = null;
             // 
-            // FileSaverServiceInstaller
+            // serviceInstaller1
             // 
-            this.FileSaverServiceInstaller.Description = "File Saver Service V0.4.5";
-            this.FileSaverServiceInstaller.DisplayName = "File Saver Service";
-            this.FileSaverServiceInstaller.ServiceName = "FileSaverHelper";
+            this.serviceInstaller1.Description = "File Saver Service Helper v0.9.12";
+            this.serviceInstaller1.DisplayName = "File Saver Service Helper";
+            this.serviceInstaller1.ServiceName = "FileSaverServiceHelper";
             // 
             // ProjectInstaller
             // 
             this.Installers.AddRange(new System.Configuration.Install.Installer[] {
-            this.FileSaverServiceProcessInstaller,
-            this.FileSaverServiceInstaller});
+            this.serviceProcessInstaller1,
+            this.serviceInstaller1});
 
         }
 
         #endregion
 
-        private System.ServiceProcess.ServiceProcessInstaller FileSaverServiceProcessInstaller;
-        private System.ServiceProcess.ServiceInstaller FileSaverServiceInstaller;
+        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller1;
+        private System.ServiceProcess.ServiceInstaller serviceInstaller1;
     }
 }

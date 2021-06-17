@@ -1,7 +1,7 @@
 ﻿
-namespace FileSaverService
+namespace FileSaver
 {
-    partial class FileSaverService
+    partial class ServiceHelper
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -32,10 +32,9 @@ namespace FileSaverService
             this.ServiceLogger = new System.Diagnostics.EventLog();
             ((System.ComponentModel.ISupportInitialize)(this.ServiceLogger)).BeginInit();
             // 
-            // FileSaverService
+            // ServiceHelper
             // 
-            this.CanPauseAndContinue = true;
-            this.ServiceName = "FileSaverHelper";
+            this.ServiceName = "FileSaverServiceHelper";
             ((System.ComponentModel.ISupportInitialize)(this.ServiceLogger)).EndInit();
 
         }
