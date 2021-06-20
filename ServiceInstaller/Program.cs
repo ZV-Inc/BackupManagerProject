@@ -11,16 +11,12 @@ namespace ServiceInstaller
     {
         static void Main()
         {
-            //Получение имен всех установленных служб в системе.
-            ServiceController[] _serviceController = ServiceController.GetServices();
-            //Проверка на существование службы "FileSaverServiceHelper".
-            bool ServiceIsInstalled = _serviceController.Any(s => s.ServiceName == "FileSaverService");
-            //Возвращает аргумент в зависимости если служба существует.
-            string _installArgument = ServiceIsInstalled ? "--uninstall" : "--install";
+            //Возвращает true или false в зависимости от существования службы.
+            string _serviceIsInstalled = ServiceController.GetServices().Any(s => s.ServiceName == "FileSaverService") ? "--uninstall" : "--install";
             //Получает путь к каталогу из которого запускалась программа.
             var _servicePath = Directory.GetCurrentDirectory() + "\\FileSaverService.exe";
 
-            switch (_installArgument)
+            switch (_serviceIsInstalled)
             {
                 case "--install":
                     try
