@@ -82,7 +82,7 @@ namespace FileSaverService
                 switch (TimeSpan.Substring(0, 2))
                 {
                     case "1 ":
-                        msTimeSpan = 3600000; //3 600 000 ms (1 час)
+                        msTimeSpan = 60000; //3 600 000 ms (1 час)
                         break;
                     case "6 ":
                         msTimeSpan = 21600000; //21 600 000 ms (6 часов)
@@ -107,7 +107,7 @@ namespace FileSaverService
                 ServiceLogger.WriteEntry($"Служба запустилась с параметрами:\n" +
                     $"Начальная директория: {StartDirectory}\n" +
                     $"Конечная директория: {EndDirectory}\n" +
-                    $"Промежуток: {msTimeSpan} ms ({TimeSpan})");
+                    $"Промежуток: {msTimeSpan} ms (1 минута)");
 
                 //Устанавливаем таймер.
                 Timer timer = new Timer();
@@ -204,7 +204,7 @@ namespace FileSaverService
 
                     DirectoryWork.DirectoryCreate(EndFolder);
 
-                    ServiceLogger.WriteEntry($"каталога \"{EndFolder}\" создана.");
+                    ServiceLogger.WriteEntry($"Каталог \"{EndFolder}\" создана.");
                     ServiceLogger.WriteEntry($"Попытка начать копирование из каталога \"{StartDirectory}\" в каталог \"{EndFolder}\"...");
 
                     DirectoryWork.DirectoryCopy(StartDirectory, EndFolder, true);

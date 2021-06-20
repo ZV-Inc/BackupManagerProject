@@ -114,8 +114,6 @@ namespace FileSaverService
                         DirectoryCopy(subdir.FullName, tempPath, copySubDirs);
                     }
                 }
-
-                ServiceLogger.WriteEntry("Копирование файлов успешно.", EventLogEntryType.SuccessAudit, 6);
             }
             catch (Exception ex)
             {
