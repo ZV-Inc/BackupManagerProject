@@ -1,6 +1,6 @@
-﻿//StartDirectory — Начальная директория (Директория с файлами\каталогами)
-//EndDriectory — Конечная директория (Директория с каталогами копий)
-//EndFolder — Название конечного каталога
+﻿//StartDirectory — Начальная директория (Директория с файлами\каталогами для копирования)
+//EndDriectory — Конечная директория (Директория с каталогами)
+//EndFolder — Название конечного каталога (Куда будут копироваться файлы)
 
 using System;
 using System.IO;
@@ -24,11 +24,11 @@ namespace FileSaverService
         //Импорт advapi32.dll для работы SetServiceStatus.
         [DllImport("advapi32.dll", SetLastError = true)]
 
-        //Установка статуса службы.
+        //Поле со статусом службы.
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
         /// <summary>
-        /// Метод, где инициализируется служба.
+        /// Инициализация службы.
         /// </summary>
         public FileSaverService()
         {
@@ -58,7 +58,7 @@ namespace FileSaverService
                     EventLog.CreateEventSource("FileSaverServiceSource", "FileSaverServiceLog");
                 }
 
-                //Указатели на существующий журнал в "Просмотр событий".
+                //Указатели на журнал в "Просмотр событий".
                 ServiceLogger.Source = "FileSaverServiceSource";
                 ServiceLogger.Log = "FileSaverServiceLog";
 
@@ -131,7 +131,7 @@ namespace FileSaverService
         {
             try
             {
-                //Обновиление состояния службы до "Stop Pending".
+                //Обновление состояния службы до "Stop Pending".
                 ServiceStatus serviceStatus = new ServiceStatus();
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOP_PENDING;
                 serviceStatus.dwWaitHint = 100000;
@@ -139,7 +139,7 @@ namespace FileSaverService
 
                 ServiceLogger.WriteEntry("Служба остановлена.");
 
-                //Обновления состояния службы до "Stopped".
+                //Обновление состояния службы до "Stopped".
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
             }
@@ -200,7 +200,7 @@ namespace FileSaverService
 
                     DirectoryWork.DirectoryCreate(EndFolder);
 
-                    ServiceLogger.WriteEntry($"Каталог \"{EndFolder}\" создана.");
+                    ServiceLogger.WriteEntry($"Каталог \"{EndFolder}\" создан.");
                     ServiceLogger.WriteEntry($"Попытка начать копирование из каталога \"{StartDirectory}\" в каталог \"{EndFolder}\"...");
 
                     DirectoryWork.DirectoryCopy(StartDirectory, EndFolder, true);
