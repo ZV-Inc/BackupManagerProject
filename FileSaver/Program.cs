@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.ServiceProcess;
-using System.Windows.Forms;
+﻿using System.ServiceProcess;
 
 namespace FileSaver
 {
@@ -12,19 +9,12 @@ namespace FileSaver
         /// </summary>
         static void Main()
         {
-            try
+            ServiceBase[] ServicesToRun;
+            ServicesToRun = new ServiceBase[]
             {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[]
-                {
-                        new ServiceHelper()
-                };
-                ServiceBase.Run(ServicesToRun);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Исключение:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                new ServiceHelper()
+            };
+            ServiceBase.Run(ServicesToRun);
         }
     }
 }

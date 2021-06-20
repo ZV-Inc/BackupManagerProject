@@ -14,11 +14,11 @@ namespace ServiceInstaller
             //Получение имен всех установленных служб в системе.
             ServiceController[] _serviceController = ServiceController.GetServices();
             //Проверка на существование службы "FileSaverServiceHelper".
-            bool ServiceIsInstalled = _serviceController.Any(s => s.ServiceName == "FileSaverServiceHelper");
+            bool ServiceIsInstalled = _serviceController.Any(s => s.ServiceName == "FileSaverService");
             //Возвращает аргумент в зависимости если служба существует.
             string _installArgument = ServiceIsInstalled ? "--uninstall" : "--install";
             //Получает путь к каталогу из которого запускалась программа.
-            var _folderPath = Directory.GetCurrentDirectory();
+            var _servicePath = Directory.GetCurrentDirectory() + "\\FileSaverService.exe";
 
             switch (_installArgument)
             {
@@ -26,8 +26,8 @@ namespace ServiceInstaller
                     try
                     {
                         //Запуск утилиты "InstallUtil.exe" с заданными параметрами. Для установки службы.
-                        ManagedInstallerClass.InstallHelper(new string[] { $"{_folderPath}\\FileSaver.exe" });
-                        MessageBox.Show($"Служба \"File Saver Helper\" установлена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        ManagedInstallerClass.InstallHelper(new string[] { _servicePath });
+                        MessageBox.Show($"Служба \"File Saver Service\" установлена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
                     catch (Exception ex)
                     {
@@ -39,8 +39,8 @@ namespace ServiceInstaller
                     try
                     {
                         //Запуск утилиты "InstallUtil.exe" с заданными параметрами. Для удаления службы.
-                        ManagedInstallerClass.InstallHelper(new string[] { "/u", $"{_folderPath}\\FileSaver.exe" });
-                        MessageBox.Show($"Служба \"File Saver Helper\" удалена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        ManagedInstallerClass.InstallHelper(new string[] { "/u", _servicePath });
+                        MessageBox.Show($"Служба \"File Saver Service\" удалена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
                     catch (Exception ex)
                     {

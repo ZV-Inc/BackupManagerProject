@@ -35,7 +35,7 @@ namespace FileSaverService
             // FileSaverService
             // 
             this.CanPauseAndContinue = true;
-            this.ServiceName = "FileSaverHelper";
+            this.ServiceName = "FileSaverService";
             ((System.ComponentModel.ISupportInitialize)(this.ServiceLogger)).EndInit();
 
         }

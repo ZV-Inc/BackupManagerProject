@@ -42,7 +42,7 @@ namespace FileSaverService
             // 
             this.FileSaverServiceInstaller.Description = "File Saver Service V0.4.5";
             this.FileSaverServiceInstaller.DisplayName = "File Saver Service";
-            this.FileSaverServiceInstaller.ServiceName = "FileSaverHelper";
+            this.FileSaverServiceInstaller.ServiceName = "FileSaverService";
             // 
             // ProjectInstaller
             // 
