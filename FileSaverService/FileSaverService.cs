@@ -74,10 +74,6 @@ namespace FileSaverService
                     TimeSpan = registryKey.GetValue("Time span").ToString();
                 }
 
-                ServiceLogger.WriteEntry($"Start Directory: {StartDirectory}\n" +
-                    $"End Directory: {EndDirectory}\n" +
-                    $"Time span: {TimeSpan}");
-
                 //Информация о выбранном времени.
                 switch (TimeSpan.Substring(0, 2))
                 {
