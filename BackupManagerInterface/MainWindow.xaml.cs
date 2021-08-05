@@ -7,6 +7,7 @@ using System.ServiceProcess;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using BackupManagerLib;
+using System.Linq;
 
 namespace BackupManagerInterface
 {
@@ -30,13 +31,16 @@ namespace BackupManagerInterface
         {
             try
             {
+                ServiceController.GetServices();
+                DriveInfo[] driveInfo = DriveInfo.GetDrives();
+
                 if (!EventLog.SourceExists("BackupManagerServiceSource"))
                 {
                     EventLog.CreateEventSource("BackupManagerServiceSource", "BackupManagerServiceLog");
                 }
 
-                ServiceController.GetServices();
-                DriveInfo[] driveInfo = DriveInfo.GetDrives();
+                _serviceLogger.Source = "BackupManagerServiceSource";
+                _serviceLogger.Log = "BackupManagerServiceLog";
 
                 foreach (DriveInfo strings in driveInfo)
                 {
@@ -108,14 +112,11 @@ namespace BackupManagerInterface
         {
             try
             {
-                if (File.Exists("ServiceInstaller.exe"))
+                var allServices = ServiceController.GetServices();
+
+                if (File.Exists("ServiceInstaller.exe") && !allServices.Any(s => s.ServiceName == "BackupManagerService"))
                 {
-                    Process.Start("ServiceInstaller.exe");
-                }
-                else
-                {
-                    System.Windows.Forms.MessageBox.Show($"Не удалось найти файл \"ServiceInstaller.exe\".", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    Process.Start("ServiceInstaller.exe").WaitForExit();
                 }
 
                 if (_registryKey.GetValue("Start Directory") == null || _registryKey.GetValue("End Directory") == null || _registryKey.GetValue("Time span") == null)
@@ -276,7 +277,7 @@ namespace BackupManagerInterface
         {
             try
             {
-                Help.ShowHelp(null, "DBMHELP.chm");
+                Help.ShowHelp(null, "Backup Manager Help.chm");
             }
             catch (Exception ex)
             {
@@ -323,7 +324,7 @@ namespace BackupManagerInterface
             {
                 if (_registryKey.GetValue("Start Directory").ToString().Length == 0)
                 {
-                    RegistryInfoTextBox.Text = $"Отсутствуют.";
+                    RegistryInfoTextBox.Text = $"Текущие настройки отсутствуют. Для сохранения настроек выберите начальную и конечную папку, затем \"Файл - Сохранить\".";
                 }
                 else
                 {
