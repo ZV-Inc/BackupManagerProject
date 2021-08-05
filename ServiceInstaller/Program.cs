@@ -12,9 +12,9 @@ namespace ServiceInstaller
     {
         static void Main()
         {
-            EventLog _serviceLogger = new EventLog("FileSaverServiceLog", ".", "FileSaverServiceSource");
-            string _serviceIsInstalled = ServiceController.GetServices().Any(s => s.ServiceName == "FileSaverService") ? "--uninstall" : "--install";
-            var _servicePath = Directory.GetCurrentDirectory() + "\\FileSaverService.exe";
+            EventLog _serviceLogger = new EventLog("BackupManagerServiceLog", ".", "BackupManagerServiceSource");
+            string _serviceIsInstalled = ServiceController.GetServices().Any(s => s.ServiceName == "BackupManagerService") ? "--uninstall" : "--install";
+            var _servicePath = Directory.GetCurrentDirectory() + "\\BackupManagerService.exe";
 
             switch (_serviceIsInstalled)
             {
@@ -22,7 +22,7 @@ namespace ServiceInstaller
                     try
                     {
                         ManagedInstallerClass.InstallHelper(new string[] { _servicePath });
-                        MessageBox.Show($"Служба \"File Saver Service\" установлена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show($"Служба \"Backup Manager Service\" установлена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
                     catch (Exception ex)
                     {
@@ -33,17 +33,17 @@ namespace ServiceInstaller
                 case "--uninstall":
                     try
                     {
-                        ServiceController _serviceController = new ServiceController("FileSaverService");
+                        ServiceController _serviceController = new ServiceController("BackupManagerService");
 
                         if (_serviceController.Status == ServiceControllerStatus.Running)
                         {
                             _serviceController.Stop();
                             _serviceLogger.WriteEntry("Service stopped from Service Installer");
-                            MessageBox.Show($"Служба \"File Saver Service\" уже была запущена и в результате остановлена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"Служба \"Backup Manager Service\" уже была запущена и в результате остановлена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
 
                         ManagedInstallerClass.InstallHelper(new string[] { "/u", _servicePath });
-                        MessageBox.Show($"Служба \"File Saver Service\" удалена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show($"Служба \"Backup Manager Service\" удалена.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
                     catch (Exception ex)
                     {

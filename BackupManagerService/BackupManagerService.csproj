@@ -50,11 +50,11 @@
     <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackupManager.cs">
+    <Compile Include="BackupManagerService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BackupManager.Designer.cs">
-      <DependentUpon>BackupManager.cs</DependentUpon>
+    <Compile Include="BackupManagerService.Designer.cs">
+      <DependentUpon>BackupManagerService.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,8 +64,8 @@
     <None Include="Keys.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BackupManager.resx">
-      <DependentUpon>BackupManager.cs</DependentUpon>
+    <EmbeddedResource Include="BackupManagerService.resx">
+      <DependentUpon>BackupManagerService.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
