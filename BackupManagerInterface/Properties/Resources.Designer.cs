@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FileSaverInterface.Properties {
+namespace BackupManagerInterface.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace FileSaverInterface.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FileSaverInterface.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BackupManagerInterface.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,21 @@ namespace FileSaverInterface.Properties {
         }
         
         /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
+        /// </summary>
+        internal static System.Drawing.Icon BackupManagerIco {
+            get {
+                object obj = ResourceManager.GetObject("BackupManagerIco", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap diskInfo {
+        internal static System.Drawing.Bitmap BackupManagerPng {
             get {
-                object obj = ResourceManager.GetObject("diskInfo", resourceCulture);
+                object obj = ResourceManager.GetObject("BackupManagerPng", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

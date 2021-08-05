@@ -7,7 +7,7 @@ using System.ServiceProcess;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using BackupManagerLib;
-
+using System.ComponentModel;
 
 namespace BackupManagerInterface
 {
@@ -16,8 +16,8 @@ namespace BackupManagerInterface
         private string _startDirectory;
         private string _endDirectory;
 
-        private RegistryKey _registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\FileSaver");
-        private ServiceController _serviceController = new ServiceController("FileSaverService");
+        private RegistryKey _registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\BackupManager");
+        private ServiceController _serviceController = new ServiceController("BackupManagerService");
         private EventLog _serviceLogger = new EventLog();
         private FolderBrowserDialog _browserDialog = new FolderBrowserDialog();
         private BackupType _backupTypes = new BackupType();
@@ -31,9 +31,9 @@ namespace BackupManagerInterface
         {
             try
             {
-                if (!EventLog.SourceExists("FileSaverServiceSource"))
+                if (!EventLog.SourceExists("BackupManagerServiceSource"))
                 {
-                    EventLog.CreateEventSource("FileSaverServiceSource", "FileSaverServiceLog");
+                    EventLog.CreateEventSource("BackupManagerServiceSource", "BackupManagerServiceLog");
                 }
 
                 ServiceController.GetServices();
@@ -46,7 +46,7 @@ namespace BackupManagerInterface
 
                 if (_registryKey.GetValue("Start Directory") == null || _registryKey.GetValue("End Directory") == null || _registryKey.GetValue("Time span") == null)
                 {
-                    using (_registryKey.OpenSubKey(@"Software\WOW6432Node\FileSaver"))
+                    using (_registryKey.OpenSubKey(@"Software\WOW6432Node\BackupManager"))
                     {
                         _registryKey.SetValue("Start Directory", "");
                         _registryKey.SetValue("End Directory", "");
@@ -118,7 +118,7 @@ namespace BackupManagerInterface
                 }
                 else
                 {
-                    _serviceController.ServiceName = "FileSaverService";
+                    _serviceController.ServiceName = "BackupManagerService";
                     _serviceController.Refresh();
 
                     if (_serviceController.Status == ServiceControllerStatus.Running)
@@ -137,6 +137,10 @@ namespace BackupManagerInterface
                     }
                 }
             }
+            catch (InvalidOperationException ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"При попытке запустить службу произошла ошибка: {ex.Message}\n\nВозможно служба не установлена, для её установки используйте \"ServiceInstaller.exe\"", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show($"При попытке запустить службу произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -147,7 +151,7 @@ namespace BackupManagerInterface
         {
             try
             {
-                _serviceController.ServiceName = "FileSaverService";
+                _serviceController.ServiceName = "BackupManagerService";
                 _serviceController.Refresh();
 
                 if (_serviceController.Status == ServiceControllerStatus.Stopped)
@@ -164,6 +168,10 @@ namespace BackupManagerInterface
                         $"Текущий статус службы: {_serviceController.Status}", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _serviceLogger.WriteEntry("Служба остановлена с помощью программы");
                 }
+            }
+            catch (InvalidOperationException ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"При попытке запустить службу произошла ошибка: {ex.Message}\n\nВозможно служба не установлена, для её установки используйте \"ServiceInstaller.exe\"", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
@@ -306,7 +314,7 @@ namespace BackupManagerInterface
             {
                 if (_registryKey.GetValue("Start Directory").ToString().Length == 0)
                 {
-                    RegistryInfoTextBox.Text = $"Не удалось получить данные (Возможно данные отсутствуют)";
+                    RegistryInfoTextBox.Text = $"Отсутствуют.";
                 }
                 else
                 {

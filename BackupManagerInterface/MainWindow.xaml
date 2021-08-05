@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSaverInterface"
         mc:Ignorable="d"
-        Title="Backup Manager" Height="485" Width="625" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="diskInfo.png">
+        Title="Backup Manager" Height="485" Width="625" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Left" Icon="Resources/BackupManagerPng.png">
     <Grid UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition/>

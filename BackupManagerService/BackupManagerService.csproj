@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A0A71C1F-60D2-402E-AB14-90AA3054EED7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>FileSaverService</RootNamespace>
-    <AssemblyName>FileSaverService</AssemblyName>
+    <RootNamespace>BackupManagerService</RootNamespace>
+    <AssemblyName>BackupManagerService</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,6 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Keys.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BackupManagerLib">
       <HintPath>..\BackupManagerLib\bin\Debug\BackupManagerLib.dll</HintPath>
@@ -55,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Keys.pfx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BackupManager.resx">
