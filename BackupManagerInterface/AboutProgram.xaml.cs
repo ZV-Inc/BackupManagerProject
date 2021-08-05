@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace FileSaverInterface
+namespace BackupManagerInterface
 {
     /// <summary>
     /// Логика взаимодействия для AboutProgram.xaml
