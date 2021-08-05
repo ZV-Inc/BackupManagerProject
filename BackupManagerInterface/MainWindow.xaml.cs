@@ -7,7 +7,6 @@ using System.ServiceProcess;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using BackupManagerLib;
-using System.ComponentModel;
 
 namespace BackupManagerInterface
 {
@@ -109,6 +108,16 @@ namespace BackupManagerInterface
         {
             try
             {
+                if (File.Exists("ServiceInstaller.exe"))
+                {
+                    Process.Start("ServiceInstaller.exe");
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show($"Не удалось найти файл \"ServiceInstaller.exe\".", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 if (_registryKey.GetValue("Start Directory") == null || _registryKey.GetValue("End Directory") == null || _registryKey.GetValue("Time span") == null)
                 {
                     System.Windows.Forms.MessageBox.Show($"Не удалось найти сохраненные папки или одно из значений пустое.\n\n" +
