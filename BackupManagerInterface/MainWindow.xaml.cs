@@ -13,19 +13,19 @@ namespace BackupManagerInterface
 {
     public partial class MainWindow : Window
     {
-        private string _startDirectory;
-        private string _endDirectory;
-
-        private RegistryKey _registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\BackupManager");
-        private ServiceController _serviceController = new ServiceController("BackupManagerService");
-        private EventLog _serviceLogger = new EventLog();
-        private FolderBrowserDialog _browserDialog = new FolderBrowserDialog();
-        private BackupType _backupTypes = new BackupType();
-
         public MainWindow()
         {
             InitializeComponent();
         }
+
+        private string _startDirectory;
+        private string _endDirectory;
+
+        private readonly RegistryKey _registryKey = Registry.LocalMachine.CreateSubKey(@"Software\WOW6432Node\BackupManager");
+        private readonly ServiceController _serviceController = new ServiceController("BackupManagerService");
+        private readonly EventLog _serviceLogger = new EventLog();
+        private readonly FolderBrowserDialog _browserDialog = new FolderBrowserDialog();
+        private readonly BackupType _backupTypes = new BackupType();
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
